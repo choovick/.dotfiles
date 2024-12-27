@@ -226,7 +226,9 @@ alias tf="${TF_BIN}"
 alias tfa="${TF_BIN} apply"
 alias tfp="${TF_BIN} plan"
 alias tfi="${TF_BIN} init"
-alias tff="tf fmt -recursive \"$(git rev-parse --show-toplevel)/terraform\""
+function tff() {
+  tf fmt -recursive "$(git rev-parse --show-toplevel)/terraform"
+}
 alias tfo='${TF_BIN} output -json | jq "reduce to_entries[] as \$entry ({}; .[\$entry.key] = \$entry.value.value)"'
 alias n="nvim ."
 
@@ -246,7 +248,8 @@ alias splitdirs='for dir in */; do tmux split-window -v "cd '\''$dir'\'' && exec
 # aws profile selector
 alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
 # kubectl context selector
-alias kubectx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
+alias kx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
+alias k9='k9s --context $(kubectl config get-contexts -o name | fzf)'
 
 
 # display

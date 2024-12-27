@@ -1,0 +1,39 @@
+plugins:
+  node-shell:
+    shortCut: 's'
+    description: node-shell
+    scopes:
+    - node
+    command: kubectl
+    background: false
+    args:
+    - --kubeconfig=$KUBECONFIG
+    - node-shell
+    - $NAME
+  #--- Create debug container for selected pod in current namespace
+  # See https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/#ephemeral-container
+  debug:
+    shortCut: Shift-D
+    description: Add debug container
+    dangerous: true
+    scopes:
+    - containers
+    command: bash
+    background: false
+    confirm: true
+    args:
+    - -c
+    - "kubectl --kubeconfig=$KUBECONFIG debug -it --context $CONTEXT -n=$NAMESPACE $POD --target=$NAME --image=nicolaka/netshoot:v0.13 --share-processes -- bash"
+  sniff-bash:
+    shortCut: w
+    description: sniff-bash
+    scopes:
+    - containers
+    # need to run via bash, k9s wrapper not working...
+    command: bash
+    # to exit sniff mode, close wireshark ui
+    background: true
+    confirm: true
+    args:
+    - -c
+    - "kubectl sniff $POD --context $CONTEXT --namespace=$NAMESPACE --container $NAME --privileged --image ghcr.io/nefelim4ag/ksniff-helper:v4 --tcpdump-image ghcr.io/nefelim4ag/tcpdump:latest"
