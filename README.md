@@ -25,3 +25,9 @@ OSX install: `brew install stow`
     ```bash
     stow -d stow -t $HOME $(ls -d stow/*/| xargs -n 1 basename)
     ```
+
+    or using helper script
+
+    ```bash
+    ./stow.sh
+    ```
