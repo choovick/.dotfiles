@@ -276,8 +276,8 @@ source "${ZSH_CUSTOM:-~/.zsh}/plugins/zsh-system-clipboard/zsh-system-clipboard.
 # export TERM=screen-256color
 
 # check if $TERM_PROGRAM == iTerm.app variable set to identify terminal
-if [ "$TERM_PROGRAM" = "iTerm.app" ] ||  [ "$TERM_PROGRAM" = "WezTerm" ] ; then
-	# tmux process detection, only go here is we are not in tmux
+if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PROGRAM" = "ghostty" ]]; then
+# tmux process detection, only go here is we are not in tmux
 	if [ "$TMUX" = "" ]; then
 		if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
 			echo "We are in nvim terminal"
