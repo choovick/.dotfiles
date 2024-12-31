@@ -128,6 +128,10 @@ keymap = [
 	{ on = [ "g", "c" ],       run = "cd ~/.config",     desc = "Goto ~/.config" },
 	{ on = [ "g", "d" ],       run = "cd ~/Downloads",   desc = "Goto ~/Downloads" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive", desc = "Jump interactively" },
+	{ on = [ "g", "i", "i"],   run = "cd ~/dev/infrastructure",                          desc = "Goto ~/dev/infrastructure" },
+	{ on = [ "g", "i", "d"],   run = "cd ~/dev/infrastructure/terraform/live/com/dev",   desc = "Goto infra dev" },
+	{ on = [ "g", "i", "s"],   run = "cd ~/dev/infrastructure/terraform/live/com/stg",   desc = "Goto infra stg" },
+	{ on = [ "g", "i", "p"],   run = "cd ~/dev/infrastructure/terraform/live/com/prod",  desc = "Goto infra prod" },
 
 	# Tabs
 	{ on = "t", run = "tab_create --current", desc = "Create a new tab with CWD" },
