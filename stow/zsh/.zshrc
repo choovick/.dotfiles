@@ -29,6 +29,7 @@ source $ZSH/oh-my-zsh.sh
 bindkey -v
 # enable escape on jk in insert mode
 bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M viins 'jj' vi-cmd-mode
 # https://github.com/mcornella/ohmyzsh/blob/master/plugins/vi-mode/README.md
 VI_MODE_SET_CURSOR=true
 
