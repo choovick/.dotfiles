@@ -127,6 +127,7 @@ keymap = [
 	{ on = [ "g", "h" ],       run = "cd ~",             desc = "Go home" },
 	{ on = [ "g", "c" ],       run = "cd ~/.config",     desc = "Goto ~/.config" },
 	{ on = [ "g", "d" ],       run = "cd ~/Downloads",   desc = "Goto ~/Downloads" },
+	{ on = [ "g", "a" ],       run = "cd ~/Applications",   desc = "Goto /Applications" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive", desc = "Jump interactively" },
 	{ on = [ "g", "i", "i"],   run = "cd ~/dev/infrastructure",                          desc = "Goto ~/dev/infrastructure" },
 	{ on = [ "g", "i", "d"],   run = "cd ~/dev/infrastructure/terraform/live/com/dev",   desc = "Goto infra dev" },
