@@ -292,7 +292,7 @@ if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PRO
 				tmux new-window -d -t 2 -n "sec" -c "$HOME"
 				tmux new-window -d -t 3 -n "third" -c "$HOME"
 				tmux new-window -d -t 4 -n "dev" -c "$HOME/dev"
-				tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/"
+				tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
 				tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
 				tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
 				tmux new-window -d -t 9 -n "last" -c "$HOME"
