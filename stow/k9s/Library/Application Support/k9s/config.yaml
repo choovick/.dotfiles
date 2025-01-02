@@ -25,7 +25,7 @@ k9s:
     reactive: false
     # Toggles icons display as not all terminal support these chars.
     noIcons: false
-    skin: gruvbox-dark
+    skin: gb-dark
   # Toggles whether k9s should check for the latest revision from the Github repository releases. Default is false.
   skipLatestRevCheck: false
   # Disable count pods while in node view. Default is false.
