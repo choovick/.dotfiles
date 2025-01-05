@@ -72,4 +72,19 @@ config.macos_window_background_blur = 10
 -- dont confirm on exit
 config.window_close_confirmation = "NeverPrompt"
 
+config.keys = {
+  -- remap ctrl tab to option tab
+  {
+    key = 'Tab',
+    mods = 'CTRL',
+    action = wezterm.action.SendKey { key = 'Tab', mods = 'OPT' },
+  },
+  -- remap ctrl shift tab to option shift tab
+  {
+    key = 'Tab',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.SendKey { key = '~', mods = 'OPT' },
+  }
+}
+
 return config
