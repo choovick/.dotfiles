@@ -82,7 +82,10 @@ function split-folders() {
   local counter=0
   # Use fzf to select multiple folders
   local folders
-  folders=$(ls -d */ | fzf --multi --preview 'ls -la {}')
+  #folders=$(ls -d */ | fzf --multi --preview 'ls -la {}')
+  # all subfolders, obey git!
+  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d))" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+
 
   echo "Selected folders: $folders"
 
