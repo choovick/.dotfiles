@@ -1,4 +1,25 @@
 plugins:
+  tools-pod:
+    #  kubectl run -it --rm --image=praqma/network-multitool tools -- sh -c "bash"
+    shortCut: Ctrl-T
+    description: Tools Pod Interactive Shell
+    scopes:
+    - pods
+    command: kubectl
+    confirm: true
+    background: false
+    args:
+    - run
+    - -it
+    - --rm
+    - --image=praqma/network-multitool
+    - tools
+    - --context=$CONTEXT
+    - --namespace=$NAMESPACE
+    - --
+    - sh
+    - -c
+    - bash
   node-shell:
     shortCut: 's'
     description: node-shell
