@@ -104,6 +104,14 @@ function split-folders() {
     tmux select-layout tiled
     counter=$((counter + 1))
   done <<< "$folders"
+
+
+  echo "Will exit in 5 seconds, press any key to cancel"
+  if read -s -k 1 -t 5; then
+    return
+  else
+    exit
+  fi
 }
 
 # check is zoxide is install and source it
