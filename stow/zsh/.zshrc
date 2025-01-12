@@ -11,16 +11,16 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
 plugins=(
-	git
-	fzf-tab
-	zsh-syntax-highlighting
-	zsh-autosuggestions
-	ohmyzsh-full-autoupdate
-	#vi-mode
+  git
+  fzf-tab
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+  ohmyzsh-full-autoupdate
+  #vi-mode
 )
 # if not in MC shell add vi-mode
 if [ -z "$MC_SID" ]; then
-	plugins+=(vi-mode)
+  plugins+=(vi-mode)
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -86,7 +86,6 @@ function split-folders() {
   # all subfolders, obey git!
   folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d))" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
 
-
   echo "Selected folders: $folders"
 
   if [[ -z "$folders" ]]; then
@@ -103,8 +102,7 @@ function split-folders() {
     fi
     tmux select-layout tiled
     counter=$((counter + 1))
-  done <<< "$folders"
-
+  done <<<"$folders"
 
   echo "Will exit in 5 seconds, press any key to cancel"
   if read -s -k 1 -t 5; then
@@ -119,25 +117,25 @@ function split-folders() {
 
 # this will search dev folders with some ingnores
 fcd() {
-	local folder="$1" # Get the folder name from the first argument
-	local selected_dir
-	# is second argument is provided, set no_ignore variable to --no-ignore
-	[[ -n "$2" ]] && local no_ignore="--no-ignore" || local no_ignore=""
-	selected_dir=$(fd --type d $no_ignore --maxdepth 15 \
-  -E '.vscode*' \
-  -E '.idea*' \
-  -E 'Library/*' \
-  -E '_arch/*' \
-  -E '.local/*' \
-  -E 'node_modules/*' \
-  -E 'bower_components/*' \
-  -E 'public/*' \
-  -E 'dist/*' \
-  -E 'build/*' \
-  -E 'target/*' \
-  --hidden --strip-cwd-prefix --exclude .git \
-  --base-directory $folder |	fzf +m --height 40%)
-	cd "$folder/$selected_dir" || return
+  local folder="$1" # Get the folder name from the first argument
+  local selected_dir
+  # is second argument is provided, set no_ignore variable to --no-ignore
+  [[ -n "$2" ]] && local no_ignore="--no-ignore" || local no_ignore=""
+  selected_dir=$(fd --type d $no_ignore --maxdepth 15 \
+    -E '.vscode*' \
+    -E '.idea*' \
+    -E 'Library/*' \
+    -E '_arch/*' \
+    -E '.local/*' \
+    -E 'node_modules/*' \
+    -E 'bower_components/*' \
+    -E 'public/*' \
+    -E 'dist/*' \
+    -E 'build/*' \
+    -E 'target/*' \
+    --hidden --strip-cwd-prefix --exclude .git \
+    --base-directory $folder | fzf +m --height 40%)
+  cd "$folder/$selected_dir" || return
 
 }
 # Bind Ctrl+g to the fcd function with a folder of /dev/infrastructure
@@ -164,7 +162,6 @@ _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
-
 # Brew
 eval "$(/opt/homebrew/bin/brew shellenv)" # arm one
 #eval "$(/usr/local/bin/brew shellenv)" # x86 one
@@ -184,10 +181,9 @@ eval $(thefuck --alias fk)
 
 # clear tmux history and screen
 c() {
-   clear
-   tmux clear-history
+  clear
+  tmux clear-history
 }
-
 
 # # Idea
 # alias idea='open -na "Idea.app" --args "$@"'
@@ -231,7 +227,6 @@ compdef ka=kubectl
 # Krew
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
-
 TF_BIN="tofu"
 
 alias tf="${TF_BIN}"
@@ -244,11 +239,10 @@ function tff() {
 alias tfo='${TF_BIN} output -json | jq "reduce to_entries[] as \$entry ({}; .[\$entry.key] = \$entry.value.value)"'
 alias n="nvim ."
 
-
 # check if eza is installed start code block
 if [ -f $(which eza) ]; then
-	# eza is installed
-	alias ls="eza --icons=auto"
+  # eza is installed
+  alias ls="eza --icons=auto"
 fi
 
 alias la='ls -lah'
@@ -262,7 +256,6 @@ alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
 # kubectl context selector
 alias kx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
 alias k9='k9s --context $(kubectl config get-contexts -o name | fzf)'
-
 
 # display
 alias display-restore='displayplacer "id:2997316B-A423-47EA-8390-865F1276C0E2 res:3096x1296 hz:100 color_depth:8 enabled:true scaling:on origin:(0,0) degree:0" "id:37D8832A-2D66-02CA-B9F7-8F30A301B230 res:1728x1117 hz:120 color_depth:8 enabled:true scaling:on origin:(-1728,0) degree:0" "id:33A9F171-8D5E-4A0A-8472-A882E0CEC299 res:1440x2560 hz:60 color_depth:8 enabled:true scaling:on origin:(3096,-466) degree:270"'
@@ -289,31 +282,36 @@ source "${ZSH_CUSTOM:-~/.zsh}/plugins/zsh-system-clipboard/zsh-system-clipboard.
 
 # check if $TERM_PROGRAM == iTerm.app variable set to identify terminal
 if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PROGRAM" = "ghostty" ]]; then
-# tmux process detection, only go here is we are not in tmux
-	if [ "$TMUX" = "" ]; then
-		if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
-			echo "We are in nvim terminal"
-		else
-			tmux attach-session -t 0
-			# if above fails, create new session with non 0 exit code
-			if [ $? -ne 0 ]; then
-				# session setup in background
-				tmux new-session -s 0 -d
-				# windows setup
-				#tmux kill-window -t 0
-				tmux new-window -d -t 2 -n "sec" -c "$HOME"
-				tmux new-window -d -t 3 -n "third" -c "$HOME"
-				tmux new-window -d -t 4 -n "dev" -c "$HOME/dev"
-				tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
-				tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
-				tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
-				tmux new-window -d -t 9 -n "last" -c "$HOME"
-				# attach to new session
-				tmux attach-session -t 0
-			fi
+  # tmux process detection, only go here is we are not in tmux
+  if [ "$TMUX" = "" ]; then
+    if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
+      echo "We are in nvim terminal"
+    else
+      # only attach if not in ghostty quick terminal,  lines are static and based on theme. 14 in my case
+      # idea from: https://github.com/ghostty-org/ghostty/discussions/3985#discussioncomment-11805584
+      if [[ $(tput lines) != 14 ]]; then
+        tmux attach-session -t 0
+      fi
 
-		fi
-	fi
+      # if above fails, create new session with non 0 exit code
+      if [ $? -ne 0 ]; then
+        # session setup in background
+        tmux new-session -s 0 -d
+        # windows setup
+        #tmux kill-window -t 0
+        tmux new-window -d -t 2 -n "sec" -c "$HOME"
+        tmux new-window -d -t 3 -n "third" -c "$HOME"
+        tmux new-window -d -t 4 -n "dev" -c "$HOME/dev"
+        tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
+        tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
+        tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
+        tmux new-window -d -t 9 -n "last" -c "$HOME"
+        # attach to new session
+        tmux attach-session -t 0
+      fi
+
+    fi
+  fi
 fi
 
 # TF autocomplet/e
@@ -325,17 +323,17 @@ complete -o nospace -C "${TF_BIN}" "${TF_BIN}"
 
 # Yazi
 function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
 }
 
 # check if .zshrc-local exists and source it
 if [ -f ~/.zshrc-local ]; then
-	source ~/.zshrc-local
+  source ~/.zshrc-local
 fi
 
 complete -o nospace -C /usr/local/bin/tofu tofu
