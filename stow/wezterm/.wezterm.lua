@@ -38,7 +38,7 @@ wezterm.on("window-config-reloaded", function(window, _)
   end
 end)
 -- / dynamic color scheme switching
-config.window_decorations = "RESIZE" -- "TITLE | RESIZE"
+-- config.window_decorations = "RESIZE" -- "TITLE | RESIZE"
 config.enable_tab_bar = false
 config.use_fancy_tab_bar = false
 
