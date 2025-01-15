@@ -77,6 +77,22 @@ export FZF_CTRL_R_OPTS="--preview 'echo {2..}'
   --height 60%
   --header 'Press CTRL-Y to copy ucommand into clipboard'"
 
+# helper function to select ssh connection from .ssh/config
+sssh() {
+    # Extract hosts from ~/.ssh/config
+    local selected_host
+    selected_host=$(grep -E "^Host " ~/.ssh/config | awk '{print $2}' | fzf --prompt="Select SSH Host: " --preview="echo Connecting to {}")
+    
+    # If a host is selected, connect to it
+    if [[ -n "$selected_host" ]]; then
+        echo "Connecting to $selected_host..."
+        ssh "$selected_host"
+    else
+        echo "No host selected."
+    fi
+}
+
+
 # helper function to split folders in tmux panes
 function split-folders() {
   local counter=0
