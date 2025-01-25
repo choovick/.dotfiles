@@ -1,6 +1,6 @@
 return {
   "nvim-tree/nvim-tree.lua",
-  dependencies = {{"hnvim-tree/nvim-web-devicons"}},
+  dependencies = { { "hnvim-tree/nvim-web-devicons" } },
   config = function()
     local nvimtree = require("nvim-tree")
 
@@ -18,7 +18,7 @@ return {
           buffer = bufnr,
           noremap = true,
           silent = true,
-          nowait = true
+          nowait = true,
         }
       end
 
@@ -26,7 +26,7 @@ return {
 
       -- your removals and mappings go here
       vim.keymap.del("n", "f", {
-        buffer = bufnr
+        buffer = bufnr,
       })
       -- remap the default keybindings
       vim.keymap.set("n", "\\", api.live_filter.start, opts("Live Filter: Start"))
@@ -52,7 +52,7 @@ return {
           end
 
           local prefills = {
-            paths = path
+            paths = path,
           }
 
           if not grugFar.has_instance("tree") then
@@ -61,6 +61,11 @@ return {
               prefills = prefills,
               staticTitle = "Find and Replace from Tree",
               extraArgs = "--follow --hidden",
+              folding = {
+                enabled = true,
+                foldlevel = 1,
+                foldcolumn = "1",
+              },
               openTargetWindow = {
                 -- filter for windows to exclude when considering candidate targets. It's a list of either:
                 -- * filetype to exclude
@@ -71,8 +76,8 @@ return {
                 -- window that is not excluded by the exclude filter exists in that direction, it will be reused,
                 -- otherwise a new window will be created in that direction.
                 -- available options: "prev" | "left" | "right" | "above" | "below"
-                preferredLocation = 'right'
-              }
+                preferredLocation = "right",
+              },
             })
           else
             grugFar.open_instance("tree")
@@ -88,53 +93,53 @@ return {
       on_attach = my_on_attach,
       view = {
         width = 40,
-        relativenumber = true
+        relativenumber = true,
       },
       sync_root_with_cwd = true,
       -- change folder arrow icons
       renderer = {
         indent_markers = {
-          enable = true
+          enable = true,
         },
         icons = {
           glyphs = {
             folder = {
               arrow_closed = "", -- arrow when folder is closed
-              arrow_open = "" -- arrow when folder is open
-            }
-          }
-        }
+              arrow_open = "", -- arrow when folder is open
+            },
+          },
+        },
       },
       tab = {
         sync = {
           open = true,
           close = true,
-          ignore = {}
-        }
+          ignore = {},
+        },
       },
       -- pick window on open
       actions = {
         open_file = {
           resize_window = true,
           window_picker = {
-            enable = true
-          }
-        }
+            enable = true,
+          },
+        },
       },
       filters = {
-        custom = {".DS_Store"}
+        custom = { ".DS_Store" },
       },
       git = {
-        ignore = false
+        ignore = false,
       },
       update_focused_file = {
         enable = true,
         update_root = {
           enable = false,
-          ignore_list = {}
+          ignore_list = {},
         },
-        exclude = false
-      }
+        exclude = false,
+      },
     })
-  end
+  end,
 }
