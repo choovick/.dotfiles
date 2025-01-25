@@ -93,7 +93,7 @@ keymap.set("v", "<leader>fA", function()
   -- get content of visual selection
   local selection = vim.fn.getreg("v")
 
-  require("grug-far").grug_far({
+  require("grug-far").open({
     prefills = {
       search = selection,
       replacement = "",
@@ -109,7 +109,7 @@ keymap.set("v", "<leader>fa", function()
   -- get content of visual selection
   local selection = vim.fn.getreg("v")
 
-  require("grug-far").grug_far({
+  require("grug-far").open({
     prefills = {
       search = selection,
       replacement = "",

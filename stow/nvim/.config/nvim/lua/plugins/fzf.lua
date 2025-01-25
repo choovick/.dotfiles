@@ -5,6 +5,7 @@ return {
   config = function()
     -- https://github.com/ibhagwan/fzf-lua?tab=readme-ov-file#default-options
     -- calling `setup` is optional for customization
+    local actions = require("fzf-lua").actions
     require("fzf-lua").setup({
       keymap = {
         fzf = {
@@ -13,7 +14,13 @@ return {
         },
       },
       grep = {
-        rg_opts = "--follow --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e",
+        rg_opts = "--hidden --follow --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e",
+      },
+      files = {
+        actions = {
+          ["ctrl-g"] = { actions.toggle_ignore },
+          ["ctrl-h"] = { actions.toggle_hidden },
+        },
       },
       winopts = {
         fullscreen = true,

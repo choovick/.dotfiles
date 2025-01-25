@@ -25,11 +25,9 @@ return {
           "--no-heading",
           "--with-filename",
           "--line-number",
-          "--column",
-          "--smart-case",
-
           -- add your options
           "--follow",
+          "--hidden",
         },
 
         -- path_display = { "smart" },
@@ -46,6 +44,7 @@ return {
           find_files = {
             -- follow symlinks
             follow = true,
+            hidden = true,
           },
         },
       },

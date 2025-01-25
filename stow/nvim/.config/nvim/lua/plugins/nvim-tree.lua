@@ -56,7 +56,7 @@ return {
           }
 
           if not grugFar.has_instance("tree") then
-            grugFar.grug_far({
+            grugFar.open({
               instanceName = "tree",
               prefills = prefills,
               staticTitle = "Find and Replace from Tree",
