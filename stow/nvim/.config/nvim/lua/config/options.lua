@@ -122,7 +122,7 @@ vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
 })
 
 -- Optional: Apply the InactiveBackground on startup for inactive windows
-vim.api.nvim_create_autocmd({"VimEnter", "FocusGained"}, {
+vim.api.nvim_create_autocmd({ "VimEnter", "FocusGained" }, {
   callback = function()
     for _, win in ipairs(vim.api.nvim_list_wins()) do
       if win ~= vim.api.nvim_get_current_win() then

@@ -133,7 +133,7 @@ return {
       --     end,
       --   })
       -- end,
-      ["terraformls"] = function ()
+      ["terraformls"] = function()
         -- configure terraform server
         lspconfig["terraformls"].setup({
           capabilities = capabilities,

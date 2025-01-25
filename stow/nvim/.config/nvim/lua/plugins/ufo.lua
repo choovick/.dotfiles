@@ -50,7 +50,7 @@ return {
         provider_selector = function(bufnr, filetype, buftype)
           return { "lsp", "indent" }
         end,
-        fold_virt_text_handler = handler
+        fold_virt_text_handler = handler,
       })
     end,
   },
