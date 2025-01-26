@@ -15,15 +15,6 @@ return {
     },
     -- See Commands section for default commands if you want to lazy load on them
     keys = {
-      -- Show help actions with fzf-lua
-      {
-        "<leader>Ch",
-        function()
-          local actions = require("CopilotChat.actions")
-          require("CopilotChat.integrations.fzflua").pick(actions.help_actions())
-        end,
-        desc = "CopilotChat - Help actions",
-      },
       -- Show prompts actions with fzf-lua
       {
         "<leader>Cp",

@@ -59,7 +59,7 @@ keymap.set("n", "<leader>qp", "<cmd>cprev<CR>", { desc = "Go to previous quickfi
 -- NAVIGATION/FINDING
 -- keymap.set("n", "<leader>ff", "<cmd>Telescope find_files follow=true<cr>", { desc = "Fuzzy find files in cwd" })
 keymap.set("n", "<leader> ", function()
-  require("fzf-lua").files({ resume = true })
+  require("fzf-lua").files({ resume = false })
 end, { desc = "Fuzzy find files in cwd" })
 keymap.set("n", "<leader>ff", function()
   -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
@@ -72,6 +72,9 @@ end, { desc = "Old files in current dir" })
 keymap.set("n", "<leader>fR", function()
   require("fzf-lua").oldfiles({ resume = true })
 end, { desc = "Fuzzy find recent files across sessions" })
+
+-- <leader>fx to delete buffer/close tab
+keymap.set("n", "<leader>fx", "<cmd>BufferDelete<CR>", { desc = "Close buffer" })
 
 keymap.set(
   "n",
