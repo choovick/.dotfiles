@@ -79,7 +79,8 @@ config.keys = { -- remap ctrl tab to option tab
       key = "Tab",
       mods = "OPT",
     }),
-  }, -- remap ctrl shift tab to option shift tab
+  },
+  -- remap ctrl shift tab to option shift tab
   {
     key = "Tab",
     mods = "CTRL|SHIFT",
@@ -88,11 +89,11 @@ config.keys = { -- remap ctrl tab to option tab
       mods = "OPT",
     }),
   },
-  -- Map Cmd+S to send :w<CR>
+  -- Map Cmd+S to send <ESC>:w<CR>
   {
     key = "s",
     mods = "CMD",
-    action = wezterm.action.SendString(":w\n"),
+    action = wezterm.action.SendString("\x1b:w\n"),
   },
 }
 
