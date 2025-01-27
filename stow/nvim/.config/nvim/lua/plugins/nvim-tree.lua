@@ -10,7 +10,6 @@ return {
 
     local function my_on_attach(bufnr)
       local api = require("nvim-tree.api")
-      local lib = require("nvim-tree.lib")
 
       local function opts(desc)
         return {

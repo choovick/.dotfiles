@@ -10,6 +10,44 @@ config.max_fps = 120
 -- do not resize font size when window is resized
 config.adjust_window_size_when_changing_font_size = false
 
+config.hyperlink_rules = {
+  -- Matches: a URL in parens: (URL)
+  {
+    regex = '\\((\\w+://\\S+)\\)',
+    format = '$1',
+    highlight = 1,
+  },
+  -- Matches: a URL in brackets: [URL]
+  {
+    regex = '\\[(\\w+://\\S+)\\]',
+    format = '$1',
+    highlight = 1,
+  },
+  -- Matches: a URL in curly braces: {URL}
+  {
+    regex = '\\{(\\w+://\\S+)\\}',
+    format = '$1',
+    highlight = 1,
+  },
+  -- Matches: a URL in angle brackets: <URL>
+  {
+    regex = '<(\\w+://\\S+)>',
+    format = '$1',
+    highlight = 1,
+  },
+  -- Then handle URLs not wrapped in brackets
+  -- HACK: removed trailing brackets from regex
+  {
+    regex = '\\b\\w+://\\S+[/a-zA-Z0-9-]+',
+    format = '$0',
+  },
+  -- implicit mailto link
+  {
+    regex = '\\b\\w+@[\\w-]+(\\.[\\w-]+)+\\b',
+    format = 'mailto:$0',
+  },
+}
+
 -- dynamic color scheme switching
 local function mode_overrides(appearance)
   if appearance:find("Dark") then
