@@ -330,3 +330,26 @@ keymap.set({ "n", "v" }, "<leader>sH", ":TmuxNewPaneDir hb<CR>", {
 -- alt-i,o to BufferNext and alt-i to BufferPrevious in all modes
 keymap.set({ "n", "v", "i", "x" }, "<A-o>", "<cmd>BufferNext<CR>", { desc = "Next buffer" })
 keymap.set({ "n", "v", "i", "x" }, "<A-i>", "<cmd>BufferPrevious<CR>", { desc = "Previous buffer" })
+
+-- Key mapping to close all buffers except the current one, skipping nvim-tree
+vim.keymap.set("n", "<leader>wx", function()
+    local current_buf = vim.api.nvim_get_current_buf()
+    local buffers = vim.api.nvim_list_bufs()
+
+    for _, buf in ipairs(buffers) do
+        if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
+            -- Get the buffer name
+            local buf_name = vim.api.nvim_buf_get_name(buf)
+            -- Debugging: Print the buffer number and name
+            -- print("Buffer:", buf, "Name:", buf_name)
+
+            -- Skip buffers with 'NvimTree' in their name
+            if not buf_name:match("NvimTree") then
+                print("Deleting buffer:", buf)
+                vim.api.nvim_buf_delete(buf, { force = true })
+            else
+                print("Skipping nvim-tree buffer:", buf)
+            end
+        end
+    end
+end, { desc = "Close all buffers except the current one (skip nvim-tree)" })
