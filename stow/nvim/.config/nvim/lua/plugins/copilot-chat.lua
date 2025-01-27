@@ -17,7 +17,7 @@ return {
     keys = {
       -- Show prompts actions with fzf-lua
       {
-        "<leader>Cp",
+        "<leader>pp",
         function()
           local actions = require("CopilotChat.actions")
           require("CopilotChat.integrations.fzflua").pick(actions.prompt_actions())
@@ -26,7 +26,7 @@ return {
       },
       -- Quick chat with Copilot
       {
-        "<leader>Cq",
+        "<leader>pq",
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
@@ -37,7 +37,7 @@ return {
       },
       -- Toggle CopilotChat
       {
-        "<leader>Ct",
+        "<leader>pt",
         function()
           require("CopilotChat").toggle()
         end,

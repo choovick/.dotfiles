@@ -22,6 +22,12 @@ return {
           ["ctrl-h"] = { actions.toggle_hidden },
         },
       },
+      actions = {
+        ["files"] = {
+          -- dont want to open multiple files in quickfix list, just edit them all on multiselect
+          ["enter"] = actions.file_edit,
+        },
+      },
       winopts = {
         fullscreen = true,
         preview = {
