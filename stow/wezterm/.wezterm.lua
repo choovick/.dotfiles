@@ -52,7 +52,7 @@ config.hyperlink_rules = {
 local function mode_overrides(appearance)
   if appearance:find("Dark") then
     return {
-      color_scheme = "Gruvbox Material (Gogh)",
+      color_scheme = "Gruvbox Dark (Gogh)",
       -- background = "#1e1e1e",
     }
   else
