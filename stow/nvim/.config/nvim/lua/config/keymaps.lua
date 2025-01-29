@@ -70,7 +70,7 @@ keymap.set("n", "<leader>fr", function()
   require("fzf-lua").oldfiles({ cwd_only = true, include_current_session = false, resume = true })
 end, { desc = "Old files in current dir" })
 keymap.set("n", "<leader>fR", function()
-  require("fzf-lua").oldfiles({ resume = true })
+  require("fzf-lua").oldfiles()
 end, { desc = "Fuzzy find recent files across sessions" })
 
 -- <leader>fx to delete buffer/close tab
