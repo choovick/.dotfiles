@@ -210,6 +210,9 @@ keymap.set(
   { noremap = true, silent = true, desc = "Escape string to JSON string" }
 )
 
+-- aN to create new buffer
+keymap.set("n", "<leader>aN", "<cmd>enew<CR>", { desc = "New buffer" })
+
 -- json minify using jq
 keymap.set({ "v", "n" }, "<leader>am", ":%!jq -c .<CR>", { noremap = true, silent = true, desc = "Minify JSON" })
 
