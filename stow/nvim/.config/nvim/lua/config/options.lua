@@ -94,7 +94,7 @@ function set_background_based_dark_mode(win_id, is_active)
     vim.api.nvim_win_set_option(win_id, "winhl", "Normal:NormalBackground")
   else
     if vim.o.background == "dark" then
-      vim.cmd("highlight InactiveBackground guibg=#4D4D4D")
+      vim.cmd("highlight InactiveBackground guibg=#424242")
     else
       vim.cmd("highlight InactiveBackground guibg=#A9A9A9")
     end
