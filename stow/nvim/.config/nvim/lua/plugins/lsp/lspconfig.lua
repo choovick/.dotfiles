@@ -30,10 +30,10 @@ return {
         keymap.set("n", "gr", "<cmd>FzfLua lsp_references<CR>", opts)
 
         opts.desc = "Go to declaration"
-        keymap.set("n", "gd", vim.lsp.buf.declaration, opts)
+        keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
         opts.desc = "Go to definition"
-        keymap.set("n", "gD", vim.lsp.buf.definition, opts)
+        keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 
         -- opts.desc = "Show LSP definitions"
         -- keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions<CR>", opts)
@@ -91,6 +91,9 @@ return {
       local hl = "DiagnosticSign" .. type
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
+
+    -- KCL, Install language server from Brew, dont use mason: https://github.com/kcl-lang/kcl.nvim/issues/18
+    lspconfig.kcl.setup({})
 
     -- helm https://github.com/mrjosh/helm-ls?tab=readme-ov-file#nvim-lspconfig-setup
     lspconfig.helm_ls.setup({
