@@ -89,7 +89,6 @@ config.window_padding = {
 
 -- when inactive, make the background opaque
 wezterm.on("update-status", function(window, pane)
-  local overrides = window:get_config_overrides() or {}
   local appearance = window:get_appearance()
   local overrides_appearance = mode_overrides(appearance)
   if window:is_focused() then
