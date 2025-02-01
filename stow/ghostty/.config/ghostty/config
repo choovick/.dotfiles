@@ -25,6 +25,6 @@ keybind = super+n=jump_to_prompt:1
 # rebind ctrl+shift+tab to option+~
 keybind = ctrl+shift+tab=text:\x1b~
 # rebind ctrl+tab to alt+tab
-keybind = ctrl+tab=text:text:\x1b\x09
+keybind = ctrl+tab=text:\x1b\x09
 
 confirm-close-surface = false
