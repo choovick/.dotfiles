@@ -82,7 +82,7 @@ sssh() {
     # Extract hosts from ~/.ssh/config
     local selected_host
     selected_host=$(grep -E "^Host " ~/.ssh/config | awk '{print $2}' | fzf --prompt="Select SSH Host: " --preview="echo Connecting to {}")
-    
+
     # If a host is selected, connect to it
     if [[ -n "$selected_host" ]]; then
         echo "Connecting to $selected_host..."
@@ -321,6 +321,7 @@ if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PRO
         tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
         tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
         tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
+        tmux new-window -d -t 8 -n ".dotfiles" -c "$HOME/.dotfiles"
         tmux new-window -d -t 9 -n "last" -c "$HOME"
         # attach to new session
         tmux attach-session -t 0
