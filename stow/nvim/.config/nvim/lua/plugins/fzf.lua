@@ -10,7 +10,9 @@ return {
       keymap = {
         fzf = {
           -- sets filtered items to quickfix list
-          ["CTRL-q"] = "select-all+accept",
+          ["enter"] = "accept",
+          ["ctrl-a"] = "select-all",
+          ["ctrl-t"] = "toggle-all",
         },
       },
       grep = {
@@ -26,6 +28,8 @@ return {
         ["files"] = {
           -- dont want to open multiple files in quickfix list, just edit them all on multiselect
           ["enter"] = actions.file_edit,
+          ["ctrl-q"] = actions.file_sel_to_qf,
+
         },
       },
       winopts = {
