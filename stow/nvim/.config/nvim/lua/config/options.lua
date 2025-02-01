@@ -131,3 +131,10 @@ vim.api.nvim_create_autocmd({ "VimEnter", "FocusGained" }, {
     end
   end,
 })
+-- nvim-tree window picker highlight
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    vim.cmd ("highlight NvimTreeWindowPicker guifg=#4E4E4E guibg=#FFAF01 gui=bold")
+  end,
+})
