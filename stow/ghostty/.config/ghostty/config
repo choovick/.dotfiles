@@ -5,7 +5,7 @@ font-thicken = 1
 font-size = 16
 shell-integration = zsh
 
-# in bites, need 100mb 
+# in bites, need 100mb
 scrollback-limit = 104857600
 
 # opacity
@@ -21,5 +21,10 @@ keybind = super+r=reload_config
 keybind = super+i=inspector:toggle
 keybind = super+b=jump_to_prompt:-1
 keybind = super+n=jump_to_prompt:1
+
+# rebind ctrl+shift+tab to option+~
+keybind = ctrl+shift+tab=text:\x1b~
+# rebind ctrl+tab to alt+tab
+keybind = ctrl+tab=text:text:\x1b\x09
 
 confirm-close-surface = false
