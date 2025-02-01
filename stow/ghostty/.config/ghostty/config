@@ -15,18 +15,18 @@ background-blur-radius = 20
 # view
 macos-titlebar-style = hidden
 
+# do not confirm close
+confirm-close-surface = false
+
 # keybinds
 keybind = global:super+shift+alt+ctrl+f1=toggle_quick_terminal
 keybind = super+r=reload_config
 keybind = super+i=inspector:toggle
 keybind = super+b=jump_to_prompt:-1
 keybind = super+n=jump_to_prompt:1
-
 # bind ctrl+shift+tab to option+~
 keybind = ctrl+shift+tab=text:\x1b~
 # bind ctrl+tab to alt+tab
 keybind = ctrl+tab=text:\x1b\x09
 # bind cmd+s to ctrl+s
 keybind = super+s=text:\x13
-
-confirm-close-surface = false
