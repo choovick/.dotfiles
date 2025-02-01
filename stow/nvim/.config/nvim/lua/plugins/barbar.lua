@@ -10,6 +10,8 @@ return {
       vim.g.barbar_auto_setup = false
     end,
     opts = {
+      -- https://github.com/romgrk/barbar.nvim?tab=readme-ov-file#options
+
       -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
       -- animation = true,
       -- insert_at_start = true,
