@@ -90,6 +90,8 @@ end, { desc = "Fuzzy find recent files across sessions" })
 
 -- <leader>fx to delete buffer/close tab
 keymap.set("n", "<leader>fx", "<cmd>BufferDelete<CR>", { desc = "Close buffer" })
+-- <leader>fN to create new buffer
+keymap.set("n", "<leader>fN", "<cmd>enew<CR>", { desc = "New buffer" })
 
 keymap.set(
   "n",
