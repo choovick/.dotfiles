@@ -30,3 +30,10 @@ OIDC
 SSO
 decrement
 CloudWatch
+labmda
+subnet
+params
+VPC
+PostgreSQL
+KMS
+RDS

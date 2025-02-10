@@ -65,14 +65,14 @@ keymap.set("n", "<leader>ff", function()
   -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
   require("fzf-lua").files({
     cwd = vim.fn.expand("%:p:h"),
-    resume = true
+    resume = true,
   })
 end, { desc = "Fuzzy find files in current butter dir" })
 keymap.set("n", "<leader>fF", function()
   -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
   require("fzf-lua").files({
     cwd = vim.fn.expand("%:p:h"),
-    resume = false
+    resume = false,
   })
 end, { desc = "[New] Fuzzy find files in current butter dir" })
 
@@ -81,7 +81,7 @@ keymap.set("n", "<leader>fr", function()
     cwd_only = true,
     -- show old files in current session as well
     include_current_session = true,
-    resume = true
+    resume = true,
   })
 end, { desc = "Old files in current dir" })
 keymap.set("n", "<leader>fR", function()
@@ -102,7 +102,7 @@ keymap.set(
 keymap.set("n", "<leader>fd", function()
   require("fzf-lua").live_grep_glob({
     cwd = vim.fn.expand("%:p:h"),
-    resume = true
+    resume = true,
   })
 end, { desc = "Live grep in current buffer directory" })
 keymap.set("n", "<leader>fc", "<cmd>FzfLua grep_cword<cr>", { desc = "Find string under cursor in cwd" })
@@ -356,23 +356,31 @@ keymap.set({ "n", "v", "i", "x" }, "<A-i>", "<cmd>BufferPrevious<CR>", { desc = 
 
 -- Key mapping to close all buffers except the current one, skipping nvim-tree
 vim.keymap.set("n", "<leader>wx", function()
-    local current_buf = vim.api.nvim_get_current_buf()
-    local buffers = vim.api.nvim_list_bufs()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local buffers = vim.api.nvim_list_bufs()
 
-    for _, buf in ipairs(buffers) do
-        if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
-            -- Get the buffer name
-            local buf_name = vim.api.nvim_buf_get_name(buf)
-            -- Debugging: Print the buffer number and name
-            -- print("Buffer:", buf, "Name:", buf_name)
+  for _, buf in ipairs(buffers) do
+    if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) then
+      -- Get the buffer name
+      local buf_name = vim.api.nvim_buf_get_name(buf)
+      -- Debugging: Print the buffer number and name
+      -- print("Buffer:", buf, "Name:", buf_name)
 
-            -- Skip buffers with 'NvimTree' in their name
-            if not buf_name:match("NvimTree") then
-                print("Deleting buffer:", buf)
-                vim.api.nvim_buf_delete(buf, { force = true })
-            else
-                print("Skipping nvim-tree buffer:", buf)
-            end
-        end
+      -- Skip buffers with 'NvimTree' in their name
+      if not buf_name:match("NvimTree") then
+        print("Deleting buffer:", buf)
+        vim.api.nvim_buf_delete(buf, { force = true })
+      else
+        print("Skipping nvim-tree buffer:", buf)
+      end
     end
+  end
 end, { desc = "Close all buffers except the current one (skip nvim-tree)" })
+
+vim.keymap.set("n", "<leader>z", function()
+  require("zen-mode").toggle({
+    window = {
+      width = 0.90, -- width will be 85% of the editor width
+    },
+  })
+end, { desc = "Toggle zoom" })
