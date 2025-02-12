@@ -14,6 +14,9 @@ keymap.set({ "i", "v" }, "jj", "<ESC>", { desc = "Exit insert mode with jj" })
 -- delete single character without copying into register
 keymap.set("n", "x", '"_x')
 
+-- ya to yank ^y$ in normal mode
+keymap.set("n", "ya", "^y$", { desc = "Yank line trimmed" })
+
 -- save file command
 keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 -- bind fd to quit one
@@ -377,7 +380,7 @@ vim.keymap.set("n", "<leader>wx", function()
   end
 end, { desc = "Close all buffers except the current one (skip nvim-tree)" })
 
-vim.keymap.set("n", "<leader>z", function()
+vim.keymap.set("n", "<leader>Z", function()
   require("zen-mode").toggle({
     window = {
       width = 0.90, -- width will be 85% of the editor width
