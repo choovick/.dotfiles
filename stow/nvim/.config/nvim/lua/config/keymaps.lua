@@ -62,29 +62,33 @@ keymap.set("n", "<leader>qp", "<cmd>cprev<CR>", { desc = "Go to previous quickfi
 -- NAVIGATION/FINDING
 -- keymap.set("n", "<leader>ff", "<cmd>Telescope find_files follow=true<cr>", { desc = "Fuzzy find files in cwd" })
 keymap.set("n", "<leader> ", function()
-  require("fzf-lua").files({ resume = false })
-end, { desc = "Fuzzy find files in cwd" })
-keymap.set("n", "<leader>ff", function()
-  -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
   require("fzf-lua").files({
-    cwd = vim.fn.expand("%:p:h"),
-    resume = true,
+    resume = false
   })
-end, { desc = "Fuzzy find files in current butter dir" })
-keymap.set("n", "<leader>fF", function()
+end, { desc = "Fuzzy find files in cwd" })
+
+keymap.set("n", "<leader>ff", function()
   -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
   require("fzf-lua").files({
     cwd = vim.fn.expand("%:p:h"),
     resume = false,
   })
-end, { desc = "[New] Fuzzy find files in current butter dir" })
+end, { desc = "Fuzzy find files in current butter dir" })
+
+keymap.set("n", "<leader>fF", function()
+  -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
+  require("fzf-lua").files({
+    cwd = vim.fn.expand("%:p:h"),
+    resume = true,
+  })
+end, { desc = "[Resume] Fuzzy find files in current butter dir" })
 
 keymap.set("n", "<leader>fr", function()
   require("fzf-lua").oldfiles({
     cwd_only = true,
     -- show old files in current session as well
     include_current_session = true,
-    resume = true,
+    resume = false,
   })
 end, { desc = "Old files in current dir" })
 keymap.set("n", "<leader>fR", function()
@@ -102,12 +106,19 @@ keymap.set(
   "<cmd>FzfLua live_grep_glob resume=true<cr>",
   { desc = "Live grep with rg --glob support" }
 )
+
 keymap.set("n", "<leader>fd", function()
+  require("fzf-lua").live_grep_glob({
+    cwd = vim.fn.expand("%:p:h"),
+    resume = false,
+  })
+end, { desc = "Live grep in current buffer directory" })
+keymap.set("n", "<leader>fD", function()
   require("fzf-lua").live_grep_glob({
     cwd = vim.fn.expand("%:p:h"),
     resume = true,
   })
-end, { desc = "Live grep in current buffer directory" })
+end, { desc = "[Resume]Live grep in current buffer directory" })
 keymap.set("n", "<leader>fc", "<cmd>FzfLua grep_cword<cr>", { desc = "Find string under cursor in cwd" })
 keymap.set("n", "<leader>fl", "<cmd>FzfLua lgrep_curbuf resume=true<cr>", { desc = "Live grep in current buffer" })
 
