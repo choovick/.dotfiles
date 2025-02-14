@@ -14,8 +14,8 @@ keymap.set({ "i", "v" }, "jj", "<ESC>", { desc = "Exit insert mode with jj" })
 -- delete single character without copying into register
 keymap.set("n", "x", '"_x')
 
--- ya to yank ^y$ in normal mode
-keymap.set("n", "ya", "^y$", { desc = "Yank line trimmed" })
+-- yu to yank ^y$ in normal mode
+keymap.set("n", "yu", "^y$", { desc = "Yank line trimmed" })
 
 -- save file command
 keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
