@@ -34,7 +34,8 @@ return {
         "graphql",
         "terraformls",
         "helm_ls",
-        "jedi_language_server",
+        -- "jedi_language_server",
+        "pyright",
       },
     })
 

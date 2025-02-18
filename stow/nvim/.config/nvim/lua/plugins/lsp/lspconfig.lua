@@ -136,6 +136,14 @@ return {
       --     end,
       --   })
       -- end,
+      --
+      ["pyright"] = function()
+        -- configure python server
+        lspconfig["pyright"].setup({
+          capabilities = capabilities,
+        })
+      end,
+
       ["terraformls"] = function()
         -- configure terraform server
         lspconfig["terraformls"].setup({
