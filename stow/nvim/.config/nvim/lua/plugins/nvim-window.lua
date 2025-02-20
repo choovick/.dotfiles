@@ -10,11 +10,6 @@ return {
       "<cmd>lua require('nvim-window').pick()<cr>",
       desc = "nvim-window: Jump to window",
     },
-    {
-      "<C-m>",
-      "<cmd>lua require('nvim-window').pick()<cr>",
-      desc = "nvim-window: Jump to window",
-    },
   },
   config = true,
   lazy = false,
