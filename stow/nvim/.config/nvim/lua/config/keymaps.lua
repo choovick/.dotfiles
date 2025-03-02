@@ -107,12 +107,12 @@ keymap.set("n", "<leader>fx", "<cmd>BufferDelete<CR>", { desc = "Close buffer" }
 -- <leader>fN to create new buffer
 keymap.set("n", "<leader>fN", "<cmd>enew<CR>", { desc = "New buffer" })
 
-keymap.set(
-  "n",
-  "<leader>fs",
-  "<cmd>FzfLua live_grep_glob resume=true<cr>",
-  { desc = "Live grep with rg --glob support" }
-)
+keymap.set("n", "<leader>fs", function()
+  require("fzf-lua").live_grep_glob({
+    cwd = vim.fn.getcwd(),
+    resume = false,
+  })
+end, { desc = "Live grep with rg --glob support" })
 
 keymap.set("n", "<leader>fd", function()
   require("fzf-lua").live_grep_glob({
@@ -120,13 +120,16 @@ keymap.set("n", "<leader>fd", function()
     resume = false,
   })
 end, { desc = "Live grep in current buffer directory" })
+
 keymap.set("n", "<leader>fD", function()
   require("fzf-lua").live_grep_glob({
     cwd = vim.fn.expand("%:p:h"),
     resume = true,
   })
 end, { desc = "[Resume]Live grep in current buffer directory" })
+
 keymap.set("n", "<leader>fc", "<cmd>FzfLua grep_cword<cr>", { desc = "Find string under cursor in cwd" })
+
 keymap.set("n", "<leader>fl", "<cmd>FzfLua lgrep_curbuf resume=true<cr>", { desc = "Live grep in current buffer" })
 
 keymap.set("n", "<leader>fa", function()
