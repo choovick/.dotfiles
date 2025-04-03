@@ -59,3 +59,14 @@ plugins:
     args:
     - -c
     - "kubectl sniff $POD --context $CONTEXT --namespace=$NAMESPACE --container $NAME --privileged --image ghcr.io/nefelim4ag/ksniff-helper:v4 --tcpdump-image ghcr.io/nefelim4ag/tcpdump:latest"
+  stern-logs:
+    shortCut: Ctrl-Y
+    description: Stern Logs
+    scopes:
+    - pods
+    - deployments
+    command: bash
+    background: false
+    args:
+    - -c
+    - "NAMESPACE=$NAMESPACE NAME=$NAME bash \"$(k9s info | grep Plugins | awk '{print substr($0, index($0,$2))}' | sed 's#/plugins.yaml$##')/scripts/stern-logs.sh\" || true"
