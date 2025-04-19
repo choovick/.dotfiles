@@ -65,6 +65,8 @@ plugins:
     scopes:
     - pods
     - deployments
+    - statefulsets
+    - replicasets
     command: bash
     background: false
     args:
