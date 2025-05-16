@@ -1,5 +1,5 @@
 # Themes
-theme = dark:GruvboxDark,light:AtomOneLight
+theme = dark:GruvboxDark,light:Builtin Light
 font-family = Hack Nerd Font Mono Regular
 font-thicken = 1
 font-size = 16
