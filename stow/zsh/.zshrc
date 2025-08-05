@@ -366,3 +366,26 @@ if [ -f ~/.zshrc-local ]; then
 fi
 
 complete -o nospace -C /usr/local/bin/tofu tofu
+
+# Added by Windsurf
+export PATH="/Users/sjc-lp03734/.codeium/windsurf/bin:$PATH"
+
+# Shell-GPT integration ZSH v0.2
+_sgpt_zsh() {
+if [[ -n "$BUFFER" ]]; then
+    _sgpt_prev_cmd=$BUFFER
+    BUFFER+="⌛"
+    zle -I && zle redisplay
+    BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd" --no-interaction)
+    zle end-of-line
+fi
+}
+zle -N _sgpt_zsh
+bindkey ^p _sgpt_zsh
+# Shell-GPT integration ZSH v0.2
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+
+# Atuin integration - check if atuin is installed
+if command -v atuin &> /dev/null; then
+    eval "$(atuin init zsh --disable-up-arrow)"
+fi

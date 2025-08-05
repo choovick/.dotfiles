@@ -1,6 +1,7 @@
 # Themes
 theme = dark:GruvboxDark,light:Builtin Light
 font-family = Hack Nerd Font Mono Regular
+minimum-contrast = 1.1
 font-thicken = 1
 font-size = 16
 shell-integration = zsh
