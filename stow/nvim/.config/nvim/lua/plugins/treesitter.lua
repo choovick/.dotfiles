@@ -44,6 +44,8 @@ return {
         "query",
         "vimdoc",
         "c",
+        "helm",
+        "gotmpl",
       },
       incremental_selection = {
         enable = true,

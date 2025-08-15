@@ -11,7 +11,8 @@ return {
       typescriptreact = { "eslint_d" },
       svelte = { "eslint_d" },
       python = { "pylint" },
-      terraform = { "tflint" },
+      -- TODO: figure out cpu usage issues
+      -- terraform = { "tflint" },
       markdown = { "markdownlint" },
     }
 
