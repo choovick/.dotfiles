@@ -11,7 +11,7 @@ OSX install: `brew install stow`
 1. Clone repo to home directory if not already present
 
     ```bash
-    git@github.com:choovick/.dotfiles.git $HOME/.dotfiles
+    git clone git@github.com:choovick/.dotfiles.git $HOME/.dotfiles
     ```
 
 1. Change to repo directory
@@ -20,14 +20,17 @@ OSX install: `brew install stow`
     cd $HOME/.dotfiles
     ```
 
-1. Run stow command against stow directory for all subdirectories
+1. Stow all package directories
 
     ```bash
-    stow -d stow -t $HOME $(ls -d stow/*/| xargs -n 1 basename)
+    stow */
     ```
 
-    or using helper script
+    Or stow individual packages:
 
     ```bash
-    ./stow.sh
+    stow nvim
+    stow zsh
+    stow tmux
+    # etc.
     ```
