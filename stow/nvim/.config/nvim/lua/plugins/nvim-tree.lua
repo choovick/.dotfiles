@@ -82,10 +82,14 @@ return {
     nvimtree.setup({
       on_attach = my_on_attach,
       view = {
-        width = 40,
+        width = function()
+          -- set the width to 30% of the terminal size for nvim-tree ininitialization
+          return math.floor(vim.o.columns * 0.30)
+        end,
         relativenumber = true,
       },
-      sync_root_with_cwd = true,
+      -- sync_root_with_cwd = true,
+      respect_buf_cwd = true,
       -- change folder arrow icons
       renderer = {
         indent_markers = {
@@ -110,7 +114,6 @@ return {
       -- pick window on open
       actions = {
         open_file = {
-          resize_window = true,
           window_picker = {
             enable = true,
           },
