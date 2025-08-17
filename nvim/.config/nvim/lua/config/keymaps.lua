@@ -172,6 +172,30 @@ keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
 keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = "Select Buffer" })
 keymap.set("n", "<leader>fl", "<cmd>FzfLua blines<cr>", { desc = "Search in current Buffer" })
 
+-- leader fy to yank current file path relative to cwd in n or v mode
+keymap.set({ "n", "v" }, "<leader>fy", function()
+  local rel_path = vim.fn.expand("%")
+  if rel_path == "" then
+    print("No file in the current buffer")
+    return
+  end
+  vim.fn.setreg("+", rel_path) -- yank to system clipboard
+  print("Yanked file path: " .. rel_path)
+end, { desc = "Yank current file path relative to cwd" })
+
+-- leader fY to yank current file directory relative to cwd in n or v mode
+keymap.set({ "n", "v" }, "<leader>fY", function()
+  local file_path = vim.fn.expand("%")
+  if file_path == "" then
+    print("No file in the current buffer")
+    return
+  end
+  local rel_dir = vim.fn.expand("%:h")
+  vim.fn.setreg("+", rel_dir) -- yank to system clipboard
+  print("Yanked file directory: " .. rel_dir)
+end, { desc = "Yank current file directory relative to cwd" })
+
+
 -- EXPLORER
 -- Define a global function to change directory to git root
 -- _G.change_to_git_root = function()
