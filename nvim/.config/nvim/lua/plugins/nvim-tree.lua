@@ -114,6 +114,7 @@ return {
       -- pick window on open
       actions = {
         open_file = {
+          resize_window = false,
           window_picker = {
             enable = true,
           },
