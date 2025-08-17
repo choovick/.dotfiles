@@ -82,10 +82,6 @@ return {
     nvimtree.setup({
       on_attach = my_on_attach,
       view = {
-        width = function()
-          -- set the width to 30% of the terminal size for nvim-tree ininitialization
-          return math.floor(vim.o.columns * 0.30)
-        end,
         relativenumber = true,
       },
       -- sync_root_with_cwd = true,

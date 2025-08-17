@@ -213,13 +213,21 @@ vim.api.nvim_set_keymap(
   { noremap = true, silent = true, desc = "Change directory to current buffer" }
 )
 
--- neotree
+-- NvimTree
 keymap.set("n", "<leader>ee", "<cmd>NvimTreeFocus<CR>", { desc = "Focus file explorer" }) -- toggle file explorer
 keymap.set("n", "<leader>et", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" }) -- toggle file explorer
 keymap.set("n", "fe", "<cmd>NvimTreeFocus<CR>", { desc = "Focus file explorer" }) -- toggle file explorer
 keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFile<CR>", { desc = "File explorer on current file" }) -- toggle file explorer on current file
 keymap.set("n", "<leader>ec", "<cmd>NvimTreeClose<CR>", { desc = "Close file explorer" }) -- collapse file explorer
 keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh file explorer" }) -- refresh file explorer
+vim.keymap.set("n", "<leader>eW", function()
+  local new_width = math.floor(vim.o.columns * 0.30)
+  require("nvim-tree.api").tree.resize({ absolute = new_width })
+end, { desc = "Resize width nvim-tree to 30%", noremap = true, silent = true, nowait = true })
+vim.keymap.set("n", "<leader>ew", function()
+  local new_width = 40
+  require("nvim-tree.api").tree.resize({ absolute = new_width })
+end, { desc = "Resize width nvim-tree to 40 columns", noremap = true, silent = true, nowait = true })
 
 -- ACTIONS
 -- clear search highlights
