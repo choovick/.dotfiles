@@ -13,35 +13,54 @@ return {
       debug = true, -- Enable debugging
       -- See Configuration section for rest
     },
-    -- See Commands section for default commands if you want to lazy load on them
     keys = {
-      -- Show prompts actions with fzf-lua
       {
-        "<leader>pp",
-        function()
-          local actions = require("CopilotChat.actions")
-          require("CopilotChat.integrations.fzflua").pick(actions.prompt_actions())
-        end,
-        desc = "CopilotChat - Prompt actions",
+        "<leader>ze",
+        ":CopilotChatToggle<CR>",
+        mode = "n",
+        desc = "Toggle Copilot Chat"
       },
-      -- Quick chat with Copilot
       {
-        "<leader>pq",
-        function()
-          local input = vim.fn.input("Quick Chat: ")
-          if input ~= "" then
-            require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer })
-          end
-        end,
-        desc = "CopilotChat - Quick chat",
+        "<leader>zr",
+        ":CopilotChatExplain<CR>",
+        mode = "v",
+        desc = "Explain Code"
       },
-      -- Toggle CopilotChat
       {
-        "<leader>pt",
-        function()
-          require("CopilotChat").toggle()
-        end,
-        desc = "CopilotChat - Toggle",
+        "<leader>zf",
+        ":CopilotChatReview<CR>",
+        mode = "v",
+        desc = "Review Code"
+      },
+      {
+        "<leader>zo",
+        ":CopilotChatFix<CR>",
+        mode = "v",
+        desc = "Fix Code Issues"
+      },
+      {
+        "<leader>zd",
+        ":CopilotChatOptimize<CR>",
+        mode = "v",
+        desc = "Optimize Code"
+      },
+      {
+        "<leader>zt",
+        ":CopilotChatDocs<CR>",
+        mode = "v",
+        desc = "Generate Docs"
+      },
+      {
+        "<leader>zm",
+        ":CopilotChatTests<CR>",
+        mode = "v",
+        desc = "Generate Tests"
+      },
+      {
+        "<leader>zs",
+        ":CopilotChatCommit<CR>",
+        mode = "n",
+        desc = "Generate Commit Message"
       },
     },
   },
