@@ -15,49 +15,49 @@ return {
     },
     keys = {
       {
-        "<leader>ze",
+        "<leader>zz",
         ":CopilotChatToggle<CR>",
         mode = "n",
         desc = "Toggle Copilot Chat"
       },
       {
-        "<leader>zr",
+        "<leader>ze",
         ":CopilotChatExplain<CR>",
         mode = "v",
         desc = "Explain Code"
       },
       {
-        "<leader>zf",
+        "<leader>zr",
         ":CopilotChatReview<CR>",
         mode = "v",
         desc = "Review Code"
       },
       {
-        "<leader>zo",
+        "<leader>zf",
         ":CopilotChatFix<CR>",
         mode = "v",
         desc = "Fix Code Issues"
       },
       {
-        "<leader>zd",
+        "<leader>zo",
         ":CopilotChatOptimize<CR>",
         mode = "v",
         desc = "Optimize Code"
       },
       {
-        "<leader>zt",
+        "<leader>zd",
         ":CopilotChatDocs<CR>",
         mode = "v",
         desc = "Generate Docs"
       },
       {
-        "<leader>zm",
+        "<leader>zt",
         ":CopilotChatTests<CR>",
         mode = "v",
         desc = "Generate Tests"
       },
       {
-        "<leader>zs",
+        "<leader>zc",
         ":CopilotChatCommit<CR>",
         mode = "n",
         desc = "Generate Commit Message"
