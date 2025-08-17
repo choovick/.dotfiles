@@ -173,7 +173,7 @@ vim.keymap.set({ "n", "v" }, "<leader>fz", function()
   else
     grugFar.get_instance("tree"):open()
     -- updating the prefills without clearing the search
-    grugFar.update_instance_prefills("tree", prefills, false)
+    grugFar.get_instance("tree"):update_input_values(prefills, false)
   end
 end, { desc = "Search in current buffer directory" })
 
