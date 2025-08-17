@@ -190,7 +190,8 @@ disabled = false
 [[kubernetes.contexts]]
 # Using capture groups to extract the cluster name from aws eks context
 context_pattern = ".*:(\\d+):cluster/(.*)"
-context_alias = "$1/$2"
+# context_alias = "$1/$2"
+context_alias = "$2"
 
 [cmd_duration]
 min_time = 500
