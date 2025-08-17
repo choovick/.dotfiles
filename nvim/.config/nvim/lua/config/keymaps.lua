@@ -136,6 +136,47 @@ keymap.set("n", "<leader>fa", function()
   require("grug-far").toggle_instance({ instanceName = "far", staticTitle = "Find and Replace" })
 end, { desc = "Open GrugFar for find and replace" })
 
+-- search in current buffer directory
+vim.keymap.set({ "n", "v" }, "<leader>fz", function()
+  local grugFar = require("grug-far")
+  local path = vim.fn.expand("%:p:h")
+
+  if path == "" then
+    print("No file in current buffer")
+    return
+  end
+
+  -- for macos replace all spaces in the path with \\
+  if vim.fn.has("mac") == 1 then
+    path = path:gsub(" ", "\\\\ ")
+  end
+
+  local prefills = {
+    paths = path,
+  }
+
+  if not grugFar.has_instance("tree") then
+    grugFar.open({
+      instanceName = "tree",
+      prefills = prefills,
+      staticTitle = "Find and Replace from Buffer",
+      extraArgs = "--follow --hidden",
+      folding = {
+        enabled = true,
+        foldlevel = 1,
+        foldcolumn = "1",
+      },
+      openTargetWindow = {
+        preferredLocation = "left",
+      },
+    })
+  else
+    grugFar.get_instance("tree"):open()
+    -- updating the prefills without clearing the search
+    grugFar.update_instance_prefills("tree", prefills, false)
+  end
+end, { desc = "Search in current buffer directory" })
+
 keymap.set("v", "<leader>fA", function()
   -- get content of visual selection
   local selection = vim.fn.getreg("v")

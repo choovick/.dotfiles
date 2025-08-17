@@ -70,7 +70,7 @@ return {
               },
             })
           else
-            grugFar.open_instance("tree")
+            grugFar.get_instance("tree"):open()
             -- updating the prefills without clearing the search
             grugFar.update_instance_prefills("tree", prefills, false)
           end
