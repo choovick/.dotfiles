@@ -167,7 +167,7 @@ vim.keymap.set({ "n", "v" }, "<leader>fz", function()
         foldcolumn = "1",
       },
       openTargetWindow = {
-        preferredLocation = "left",
+        preferredLocation = "right",
       },
     })
   else
