@@ -2,12 +2,8 @@ return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
     { "antosha417/nvim-lsp-file-operations", config = true },
     { "folke/neodev.nvim", opts = {} },
-    { "towolf/vim-helm" },
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
   },
   config = function()
     local keymap = vim.keymap
