@@ -1,6 +1,7 @@
 return {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
+  -- using blink.cmp instead for cmp
   enabled = false,
   dependencies = {
     -- source for file system paths
