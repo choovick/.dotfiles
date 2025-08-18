@@ -58,10 +58,10 @@ return {
         enable_default_keybindings = true,
 
         -- sets resize steps for x axis
-        resize_step_x = 4,
+        resize_step_x = 6,
 
         -- sets resize steps for y axis
-        resize_step_y = 4,
+        resize_step_y = 6,
       },
     })
   end,
