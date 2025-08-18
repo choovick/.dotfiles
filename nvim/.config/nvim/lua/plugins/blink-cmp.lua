@@ -25,6 +25,7 @@ return {
     -- C-k: Toggle signature help (if signature.enabled = true)
     --
     -- See :h blink-cmp-config-keymap for defining your own keymap
+    -- See :help ins-completion for more information on the keymap
     keymap = { preset = 'default' },
 
     appearance = {
