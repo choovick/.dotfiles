@@ -4,6 +4,7 @@ return {
   dependencies = {
     { "antosha417/nvim-lsp-file-operations", config = true },
     { "folke/neodev.nvim", opts = {} },
+    { "saghen/blink.cmp" },
   },
   config = function()
     local keymap = vim.keymap
@@ -68,9 +69,11 @@ return {
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
 
-    -- Enable LSP servers using the new vim.lsp.enable() function
-    -- These will automatically use configurations from the lsp/ directory
-    vim.lsp.enable({
+    -- Get blink.cmp capabilities
+    local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+    -- Enable LSP servers with blink.cmp capabilities
+    local servers = {
       "lua_ls",
       "pyright",
       "terraformls",
@@ -79,6 +82,12 @@ return {
       "yamlls",
       "helm_ls",
       "kcl",
-    })
+    }
+
+    for _, server in ipairs(servers) do
+      vim.lsp.enable(server, {
+        capabilities = capabilities
+      })
+    end
   end,
 }

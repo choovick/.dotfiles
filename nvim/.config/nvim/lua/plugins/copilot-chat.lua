@@ -1,6 +1,7 @@
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = false,
     branch = "main",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {

@@ -1,6 +1,7 @@
 return {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
+  enabled = false,
   dependencies = {
     -- source for file system paths
     "hrsh7th/cmp-path",
