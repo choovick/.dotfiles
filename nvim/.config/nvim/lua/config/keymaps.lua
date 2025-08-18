@@ -108,21 +108,21 @@ keymap.set("n", "<leader>fx", "<cmd>BufferDelete<CR>", { desc = "Close buffer" }
 keymap.set("n", "<leader>fN", "<cmd>enew<CR>", { desc = "New buffer" })
 
 keymap.set("n", "<leader>fs", function()
-  require("fzf-lua").live_grep_glob({
+  require("fzf-lua").live_grep({
     cwd = vim.fn.getcwd(),
     resume = false,
   })
 end, { desc = "Live grep with rg --glob support" })
 
 keymap.set("n", "<leader>fd", function()
-  require("fzf-lua").live_grep_glob({
+  require("fzf-lua").live_grep({
     cwd = vim.fn.expand("%:p:h"),
     resume = false,
   })
 end, { desc = "Live grep in current buffer directory" })
 
 keymap.set("n", "<leader>fD", function()
-  require("fzf-lua").live_grep_glob({
+  require("fzf-lua").live_grep({
     cwd = vim.fn.expand("%:p:h"),
     resume = true,
   })
