@@ -8,7 +8,6 @@ local keymap = vim.keymap -- for conciseness
 vim.api.nvim_set_keymap("v", "p", '"_dP', { noremap = true, silent = true })
 
 -- use jk to exit insert mode
-keymap.set({ "i" }, "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 keymap.set({ "i" }, "jj", "<ESC>", { desc = "Exit insert mode with jj" })
 
 -- delete single character without copying into register
