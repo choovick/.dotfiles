@@ -8,7 +8,7 @@ local keymap = vim.keymap -- for conciseness
 vim.api.nvim_set_keymap("v", "p", '"_dP', { noremap = true, silent = true })
 
 -- use jk to exit insert mode
-keymap.set({ "i" }, "jj", "<ESC>", { desc = "Exit insert mode with jj" })
+keymap.set({ "i" }, "jk", "<ESC>", { desc = "Exit insert mode with jj" })
 
 -- delete single character without copying into register
 keymap.set("n", "x", '"_x')
@@ -69,7 +69,7 @@ keymap.set("n", "<leader>qp", "<cmd>cprev<CR>", { desc = "Go to previous quickfi
 -- keymap.set("n", "<leader>ff", "<cmd>Telescope find_files follow=true<cr>", { desc = "Fuzzy find files in cwd" })
 keymap.set("n", "<leader> ", function()
   require("fzf-lua").files({
-    resume = false
+    resume = false,
   })
 end, { desc = "Fuzzy find files in cwd" })
 
@@ -234,7 +234,6 @@ keymap.set({ "n", "v" }, "<leader>fY", function()
   vim.fn.setreg("+", rel_dir) -- yank to system clipboard
   print("Yanked file directory: " .. rel_dir)
 end, { desc = "Yank current file directory relative to cwd" })
-
 
 -- EXPLORER
 -- Define a global function to change directory to git root
