@@ -166,6 +166,10 @@ fcd() {
   cd "$folder/$selected_dir" || return
 
 }
+
+# CDR cd to the root of the git repo
+alias cdr='cd $(git rev-parse --show-toplevel)'
+
 # Bind Ctrl+g to the fcd function with a folder of /dev/infrastructure
 bindkey -s '^g' 'fcd $HOME no-ignore\n'
 

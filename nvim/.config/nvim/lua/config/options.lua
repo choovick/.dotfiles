@@ -22,6 +22,14 @@ vim.filetype.add({
   },
 })
 
+-- Set smarty filetype for values.yaml files in terraform directories
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "**/terraform/**/values.yaml",
+  callback = function()
+    vim.bo.filetype = "smarty"
+  end,
+})
+
 -- see non printable characters
 opt.list = true
 
