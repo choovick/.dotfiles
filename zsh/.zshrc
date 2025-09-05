@@ -167,6 +167,18 @@ fcd() {
 
 }
 
+# helper function to select running aws instance and connect via ssm
+ssm() {
+    local INSTANCE
+    INSTANCE=$(aws ec2 describe-instances \
+        --filters "Name=instance-state-name,Values=running" \
+        --query "Reservations[].Instances[].{ID:InstanceId,Name:Tags[?Key=='Name']|[0].Value,State:State.Name}" \
+        --output text \
+        | fzf --header="Select a running instance to connect via SSM" \
+        | awk '{print $1}')
+    [ -n "$INSTANCE" ] && aws ssm start-session --target "$INSTANCE"
+}
+
 # CDR cd to the root of the git repo
 alias cdr='cd $(git rev-parse --show-toplevel)'
 
