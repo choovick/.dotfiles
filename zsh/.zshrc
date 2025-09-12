@@ -297,6 +297,8 @@ alias splitdirs='for dir in */; do tmux split-window -v "cd '\''$dir'\'' && exec
 
 # aws profile selector
 alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
+# alias aws-profile to ap
+alias ap='aws-profile'
 # kubectl context selector
 alias kx='kubectl config use-context $(kubectl config get-contexts -o name | fzf)'
 alias k9='k9s --context $(kubectl config get-contexts -o name | fzf)'
