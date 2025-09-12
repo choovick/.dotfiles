@@ -8,7 +8,7 @@ local keymap = vim.keymap -- for conciseness
 vim.api.nvim_set_keymap("v", "p", '"_dP', { noremap = true, silent = true })
 
 -- use jk to exit insert mode
-keymap.set({ "i" }, "jk", "<ESC>", { desc = "Exit insert mode with jj" })
+keymap.set({ "i" }, "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 
 -- delete single character without copying into register
 keymap.set("n", "x", '"_x')
@@ -37,8 +37,8 @@ keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- incremen
 keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- WINDOW MANAGEMENT
-keymap.set("n", "<leader>sv", "<C-w>s", { desc = "Split window vertically" }) -- split window vertically
-keymap.set("n", "<leader>sh", "<C-w>v", { desc = "Split window horizontally" }) -- split window horizontally
+keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
+keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" }) -- split window horizontally
 keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
 keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
@@ -79,7 +79,7 @@ keymap.set("n", "<leader>ff", function()
     cwd = vim.fn.expand("%:p:h"),
     resume = false,
   })
-end, { desc = "Fuzzy find files in current butter dir" })
+end, { desc = "Fuzzy find files in current buffer dir" })
 
 keymap.set("n", "<leader>fF", function()
   -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
@@ -87,7 +87,7 @@ keymap.set("n", "<leader>fF", function()
     cwd = vim.fn.expand("%:p:h"),
     resume = true,
   })
-end, { desc = "[Resume] Fuzzy find files in current butter dir" })
+end, { desc = "[Resume] Fuzzy find files in current buffer dir" })
 
 keymap.set("n", "<leader>fr", function()
   require("fzf-lua").oldfiles({
@@ -210,7 +210,7 @@ end, { desc = "Open GrugFar for find and replace" })
 
 keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
 keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = "Select Buffer" })
-keymap.set("n", "<leader>fl", "<cmd>FzfLua blines<cr>", { desc = "Search in current Buffer" })
+keymap.set("n", "<leader>fL", "<cmd>FzfLua blines<cr>", { desc = "Search in current Buffer" })
 
 -- leader fy to yank current file path relative to cwd in n or v mode
 keymap.set({ "n", "v" }, "<leader>fy", function()
