@@ -1,4 +1,6 @@
 return {
   "cappyzawa/trim.nvim",
-  opts = {},
+  opts = {
+    trim_last_line = false,
+  },
 }
