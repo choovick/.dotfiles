@@ -134,7 +134,6 @@ if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PRO
         # attach to new session
         tmux attach-session -t 0
       fi
-
     fi
   fi
 fi
