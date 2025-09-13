@@ -22,7 +22,15 @@ return {
         python = { "isort", "black" },
         terraform = { "terraform_fmt" },
         groovy = { "npm-groovy-lint" },
+        sh = { "shfmt" },
+        bash = { "shfmt" },
+        zsh = { "shfmt" },
         -- groovy = { "prettier" },
+      },
+      formatters = {
+        shfmt = {
+          prepend_args = { "-i", "2", "-ci" },
+        },
       },
       -- use leader-cf to format the file
       format_on_save = false,
