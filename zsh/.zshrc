@@ -7,6 +7,7 @@ plugins=(
   fzf-tab
   zsh-syntax-highlighting
   zsh-autosuggestions
+  zsh-system-clipboard
   ohmyzsh-full-autoupdate
 )
 ## Conditional plugings, if not in MC shell add vi-mode
@@ -17,8 +18,6 @@ fi
 export VI_MODE_SET_CURSOR=true
 ## Load oh-my-zsh
 source $ZSH/oh-my-zsh.sh
-## ZSH system clipboard plugin: https://github.com/kutsan/zsh-system-clipboard
-source "${ZSH_CUSTOM:-~/.zsh}/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh"
 ## enable vi mode
 bindkey -v
 ## enable escape on jk in insert mode
