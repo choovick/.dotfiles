@@ -1,15 +1,10 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
+# ZSH
+## Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+## Load oh-my-zsh
+source $ZSH/oh-my-zsh.sh
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
-
+## Plugins
 plugins=(
   git
   fzf-tab
@@ -17,52 +12,53 @@ plugins=(
   zsh-autosuggestions
   ohmyzsh-full-autoupdate
   #vi-mode
+  zsh-system-clipboard
 )
-# if not in MC shell add vi-mode
+## if not in MC shell add vi-mode
 if [ -z "$MC_SID" ]; then
   plugins+=(vi-mode)
 fi
+## ZSH system clipboard plugin: https://github.com/kutsan/zsh-system-clipboard
+source "${ZSH_CUSTOM:-~/.zsh}/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh"
 
-source $ZSH/oh-my-zsh.sh
-
-# enable vi mode
+## enable vi mode
 bindkey -v
-# enable escape on jk in insert mode
+## enable escape on jk in insert mode
 bindkey -M viins 'jk' vi-cmd-mode
-# https://github.com/mcornella/ohmyzsh/blob/master/plugins/vi-mode/README.md
+## https://github.com/mcornella/ohmyzsh/blob/master/plugins/vi-mode/README.md
 VI_MODE_SET_CURSOR=true
 
-# ZSH fix slow paste
+## ZSH fix slow paste
 zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 
-# ZSH disable matches
+## ZSH disable matches
 setopt +o nomatch
 
-# ZSH big history
+## ZSH do not add to history if things start with space
+setopt HIST_IGNORE_SPACE
+
+## ZSH big history
 export HISTFILESIZE=1000000000
 export HISTSIZE=1000000000
 export SAVEHIST=1000000000
 
-
-# ZSH do not add to history if things start with space
-setopt HIST_IGNORE_SPACE
-
-# ZSH disable AUTOCD
-# unsetopt AUTO_CD
-
-# ZSH don't show "%" on partial lines
+## ZSH don't show "%" on partial lines
 PROMPT_EOL_MARK=''
 
-# ZSH disable matches
+## ZSH disable matches, so that * does not expand to files in the folder
 setopt +o nomatch
 
-# theme https://starship.rs/guide/#%F0%9F%9A%80-installation
-eval "$(starship init zsh)"
+# Startship there
+## theme https://starship.rs/guide/#%F0%9F%9A%80-installation
+if [ -f $(which starship) ]; then
+  eval "$(starship init zsh)"
+fi
 
-# fzf https://github.com/junegunn/fzf#using-git
+# FZF
+## fzf https://github.com/junegunn/fzf#using-git
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# fancy preview for fzf
+## fancy preview for fzf
 export FZF_CTRL_R_OPTS="--preview 'echo {2..}'
   --preview-window wrap:top:20%
   --bind 'ctrl-/:toggle-preview'
@@ -72,129 +68,36 @@ export FZF_CTRL_R_OPTS="--preview 'echo {2..}'
   --height 60%
   --header 'Press CTRL-Y to copy ucommand into clipboard'"
 
-# helper function to select ssh connection from .ssh/config
-sssh() {
-    # Extract hosts from ~/.ssh/config
-    local selected_host
-    selected_host=$(grep -E "^Host " ~/.ssh/config | awk '{print $2}' | fzf --prompt="Select SSH Host: " --preview="echo Connecting to {}")
-
-    # If a host is selected, connect to it
-    if [[ -n "$selected_host" ]]; then
-        echo "Connecting to $selected_host..."
-        ssh "$selected_host"
-    else
-        echo "No host selected."
-    fi
-}
-
-
-# helper function to split folders in tmux panes
-function split-folders() {
-  local counter=0
-  # Use fzf to select multiple folders
-  local folders
-  #folders=$(ls -d */ | fzf --multi --preview 'ls -la {}')
-  # all subfolders, obey git!
-  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d))" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
-
-  echo "Selected folders: $folders"
-
-  if [[ -z "$folders" ]]; then
-    echo "No folders selected. Exiting."
-    return 1
-  fi
-
-  # Iterate over selected folders (handle newline-separated values)
-  while IFS= read -r folder; do
-    if ((counter % 4 == 0)); then
-      tmux split-window -v "cd $folder && exec $SHELL"
-    else
-      tmux split-window -h "cd $folder && exec $SHELL"
-    fi
-    tmux select-layout tiled
-    counter=$((counter + 1))
-  done <<<"$folders"
-
-  echo "Will exit in 5 seconds, press any key to cancel"
-  if read -s -k 1 -t 5; then
-    return
-  else
-    exit
-  fi
-}
-
-# check is zoxide is install and source it
-[ -f $(which zoxide) ] && eval "$(zoxide init zsh)" && alias cd='z'
-
-# this will search dev folders with some ingnores
-fcd() {
-  local folder="$1" # Get the folder name from the first argument
-  local selected_dir
-  # is second argument is provided, set no_ignore variable to --no-ignore
-  [[ -n "$2" ]] && local no_ignore="--no-ignore" || local no_ignore=""
-  selected_dir=$(fd --type d $no_ignore --maxdepth 15 \
-    -E '.vscode*' \
-    -E '.idea*' \
-    -E 'Library/*' \
-    -E '_arch/*' \
-    -E '.local/*' \
-    -E 'node_modules/*' \
-    -E 'bower_components/*' \
-    -E 'public/*' \
-    -E 'dist/*' \
-    -E 'build/*' \
-    -E 'target/*' \
-    --hidden --strip-cwd-prefix --exclude .git \
-    --base-directory $folder | fzf +m --height 40%)
-  cd "$folder/$selected_dir" || return
-
-}
-
-# helper function to select running aws instance and connect via ssm
-ssm() {
-    local INSTANCE
-    INSTANCE=$(aws ec2 describe-instances \
-        --filters "Name=instance-state-name,Values=running" \
-        --query "Reservations[].Instances[].{ID:InstanceId,Name:Tags[?Key=='Name']|[0].Value,State:State.Name}" \
-        --output text \
-        | fzf --header="Select a running instance to connect via SSM" \
-        | awk '{print $1}')
-    [ -n "$INSTANCE" ] && aws ssm start-session --target "$INSTANCE"
-}
-
-# CDR cd to the root of the git repo
-alias cdr='cd $(git rev-parse --show-toplevel)'
-
-# Bind Ctrl+g to the fcd function with a folder of /dev/infrastructure
-bindkey -s '^g' 'fcd $HOME no-ignore\n'
-
-# Bind Ctrl+f to the fcd function with a folder of "dev"
-bindkey -s '^f' 'fcd $HOME/dev\n'
-
-# -- Use fd instead of fzf --
-
+## -- Use fd instead of fzf --
 export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
 
-# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
+##  Use fd (https://github.com/sharkdp/fd) for listing path candidates.
+##  - The first argument to the function ($1) is the base path to start traversal
+##  - See the source code (completion.{bash,zsh}) for the details.
 _fzf_compgen_path() {
   fd --hidden --exclude .git . "$1"
 }
 
-# Use fd to generate the list for directory completion
+##  Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
 
+# Zoxide
+# check is zoxide is install and source it
+[ -f $(which zoxide) ] && eval "$(zoxide init zsh)" && alias cd='z'
+
+# CDR cd to the root of the git repo
+alias cdr='cd $(git rev-parse --show-toplevel)'
+
 # Brew
 eval "$(/opt/homebrew/bin/brew shellenv)" # arm one
-#eval "$(/usr/local/bin/brew shellenv)" # x86 one
-# Intel Brew for components and are not supported on arm
+## eval "$(/usr/local/bin/brew shellenv)" # x86 one
+## Intel Brew for components and are not supported on arm
 alias brew64="arch -x86_64 /usr/local/homebrew/bin/brew"
-
+## Add Homebrew to PATH, put arm first
 export PATH=/usr/local/Homebrew/bin:$PATH # x86 path
 export PATH=/opt/homebrew/bin:$PATH       # arm brew (takes precedence)
 
@@ -203,20 +106,11 @@ export DENO_INSTALL="/Users/sjc-lp03734/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
 # thefuck
-eval $(thefuck --alias)
-eval $(thefuck --alias fk)
-
-# clear tmux history and screen
-c() {
-  clear
-  tmux clear-history
-}
-
-# # Idea
-# alias idea='open -na "Idea.app" --args "$@"'
-
-# GO
-# export PATH=$PATH:$(go env GOPATH)/bin
+if [ -f $(which thefuck) ]; then
+  # thefuck is installed
+  eval $(thefuck --alias)
+  eval $(thefuck --alias fk)
+fi
 
 # My BIN
 export PATH=$PATH:$HOME/bin
@@ -229,7 +123,7 @@ export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"                                       # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh" # This loads nvm
 
 # MC editor
 export EDITOR=nvim
@@ -251,7 +145,7 @@ compdef ks=kubectl
 compdef ka=kubectl
 
 # Krew
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export PATH="${PATH}:${HOME}/.krew/bin"
 
 TF_BIN="tofu"
 
@@ -285,90 +179,45 @@ alias k9='k9s --context $(kubectl config get-contexts -o name | fzf)'
 # display
 alias display-restore='displayplacer "id:2997316B-A423-47EA-8390-865F1276C0E2 res:3096x1296 hz:100 color_depth:8 enabled:true scaling:on origin:(0,0) degree:0" "id:37D8832A-2D66-02CA-B9F7-8F30A301B230 res:1728x1117 hz:120 color_depth:8 enabled:true scaling:on origin:(-1728,0) degree:0" "id:33A9F171-8D5E-4A0A-8472-A882E0CEC299 res:1440x2560 hz:60 color_depth:8 enabled:true scaling:on origin:(3096,-466) degree:270"'
 
-# krew
-export PATH="${PATH}:${HOME}/.krew/bin"
-
 # Idea fix to use COMMAND ARROWS
 bindkey "\e\eOD" beginning-of-line
 bindkey "\e\eOC" end-of-line
 
-# ZSH system clipboard plugin
-source "${ZSH_CUSTOM:-~/.zsh}/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh"
-
-# TERM for Tmux
-# export TERM=screen-256color
-
-# check if $TERM_PROGRAM == iTerm.app variable set to identify terminal
-if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PROGRAM" = "ghostty" ]]; then
-  # tmux process detection, only go here is we are not in tmux
-  if [ "$TMUX" = "" ]; then
-    if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
-      echo "We are in nvim terminal"
-    else
-      # only attach if not in ghostty quick terminal,  lines are static and based on theme. 14 in my case
-      # idea from: https://github.com/ghostty-org/ghostty/discussions/3985#discussioncomment-11805584
-      if [[ $(tput lines) != 14 ]]; then
-        tmux attach-session -t 0
-      fi
-
-      # if above fails, create new session with non 0 exit code
-      if [ $? -ne 0 ]; then
-        # session setup in background
-        tmux new-session -s 0 -d
-        # windows setup
-        #tmux kill-window -t 0
-        tmux new-window -d -t 2 -n "sec" -c "$HOME"
-        tmux new-window -d -t 3 -n "third" -c "$HOME"
-        tmux new-window -d -t 4 -n "dev" -c "$HOME/dev"
-        tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
-        tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
-        tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
-        tmux new-window -d -t 8 -n ".dotfiles" -c "$HOME/.dotfiles"
-        tmux new-window -d -t 9 -n "last" -c "$HOME"
-        # attach to new session
-        tmux attach-session -t 0
-      fi
-
-    fi
-  fi
-fi
-
-# Yazi
-function y() {
-  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-  yazi "$@" --cwd-file="$tmp"
-  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-    builtin cd -- "$cwd"
-  fi
-  rm -f -- "$tmp"
-}
-
-# check if .zshrc-local exists and source it
+# MODULES
+## check if .zshrc-local exists and source it
 if [ -f ~/.zshrc-local ]; then
   source ~/.zshrc-local
+fi
+## Functions
+if [ -f ~/.zshrc-func ]; then
+  source ~/.zshrc-func
 fi
 
 # Added by Windsurf
 export PATH="/Users/sjc-lp03734/.codeium/windsurf/bin:$PATH"
 
-# Shell-GPT integration ZSH v0.2
+# SHELL-GPT
+## Shell-GPT integration ZSH v0.2
 _sgpt_zsh() {
-if [[ -n "$BUFFER" ]]; then
+  if [[ -n "$BUFFER" ]]; then
     _sgpt_prev_cmd=$BUFFER
     BUFFER+="⌛"
     zle -I && zle redisplay
-    BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd" --no-interaction)
+    BUFFER=$(sgpt --shell --no-interaction <<<"$_sgpt_prev_cmd")
     zle end-of-line
-fi
+  fi
 }
+
 zle -N _sgpt_zsh
 bindkey ^p _sgpt_zsh
-# Shell-GPT integration ZSH v0.2
+
+# Postgresql path
 export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 
 # Atuin integration - check if atuin is installed
-if command -v atuin &> /dev/null; then
-    eval "$(atuin init zsh --disable-up-arrow)"
+## https://atuin.sh/#cli-section
+if [ -f $(which atuin) ]; then
+  eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
 # check if carapace is installed and source it

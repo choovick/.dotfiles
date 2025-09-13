@@ -1,0 +1,140 @@
+# helper function to select ssh connection from .ssh/config
+sssh() {
+    # Extract hosts from ~/.ssh/config
+    local selected_host
+    selected_host=$(grep -E "^Host " ~/.ssh/config | awk '{print $2}' | fzf --prompt="Select SSH Host: " --preview="echo Connecting to {}")
+
+    # If a host is selected, connect to it
+    if [[ -n "$selected_host" ]]; then
+        echo "Connecting to $selected_host..."
+        ssh "$selected_host"
+    else
+        echo "No host selected."
+    fi
+}
+
+# helper function to split folders in tmux panes
+function split-folders() {
+    local counter=0
+    # Use fzf to select multiple folders
+    local folders
+    #folders=$(ls -d */ | fzf --multi --preview 'ls -la {}')
+    # all subfolders, obey git!
+    folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d))" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+
+    echo "Selected folders: $folders"
+
+    if [[ -z "$folders" ]]; then
+        echo "No folders selected. Exiting."
+        return 1
+    fi
+
+    # Iterate over selected folders (handle newline-separated values)
+    while IFS= read -r folder; do
+        if ((counter % 4 == 0)); then
+            tmux split-window -v "cd $folder && exec $SHELL"
+        else
+            tmux split-window -h "cd $folder && exec $SHELL"
+        fi
+        tmux select-layout tiled
+        counter=$((counter + 1))
+    done <<<"$folders"
+
+    echo "Will exit in 5 seconds, press any key to cancel"
+    if read -s -k 1 -t 5; then
+        return
+    else
+        exit
+    fi
+}
+
+# this will search dev folders with some ingnores
+fcd() {
+    local folder="$1" # Get the folder name from the first argument
+    local selected_dir
+    # is second argument is provided, set no_ignore variable to --no-ignore
+    [[ -n "$2" ]] && local no_ignore="--no-ignore" || local no_ignore=""
+    selected_dir=$(fd --type d $no_ignore --maxdepth 15 \
+        -E '.vscode*' \
+        -E '.idea*' \
+        -E 'Library/*' \
+        -E '_arch/*' \
+        -E '.local/*' \
+        -E 'node_modules/*' \
+        -E 'bower_components/*' \
+        -E 'public/*' \
+        -E 'dist/*' \
+        -E 'build/*' \
+        -E 'target/*' \
+        --hidden --strip-cwd-prefix --exclude .git \
+        --base-directory $folder | fzf +m --height 40%)
+    cd "$folder/$selected_dir" || return
+}
+##  Bind Ctrl+g to the fcd function with a folder of /dev/infrastructure
+bindkey -s '^g' 'fcd $HOME no-ignore\n'
+##  Bind Ctrl+f to the fcd function with a folder of "dev"
+bindkey -s '^f' 'fcd $HOME/dev\n'
+
+# helper function to select running aws instance and connect via ssm
+ssm() {
+    local INSTANCE
+    INSTANCE=$(aws ec2 describe-instances \
+        --filters "Name=instance-state-name,Values=running" \
+        --query "Reservations[].Instances[].{ID:InstanceId,Name:Tags[?Key=='Name']|[0].Value,State:State.Name}" \
+        --output text |
+        fzf --header="Select a running instance to connect via SSM" |
+        awk '{print $1}')
+    [ -n "$INSTANCE" ] && aws ssm start-session --target "$INSTANCE"
+}
+
+# clear tmux history and screen
+c() {
+    clear
+    tmux clear-history
+}
+
+# Yazi
+function y() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+
+# TMUX startup
+# check if $TERM_PROGRAM == iTerm.app variable set to identify terminal
+if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PROGRAM" = "ghostty" ]]; then
+    # tmux process detection, only go here is we are not in tmux
+    if [ "$TMUX" = "" ]; then
+        if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
+            echo "We are in nvim terminal"
+        else
+            # only attach if not in ghostty quick terminal,  lines are static and based on theme. 14 in my case
+            # idea from: https://github.com/ghostty-org/ghostty/discussions/3985#discussioncomment-11805584
+            if [[ $(tput lines) != 14 ]]; then
+                tmux attach-session -t 0
+            fi
+
+            # if above fails, create new session with non 0 exit code
+            if [ $? -ne 0 ]; then
+                # session setup in background
+                tmux new-session -s 0 -d
+                # windows setup
+                #tmux kill-window -t 0
+                tmux new-window -d -t 2 -n "sec" -c "$HOME"
+                tmux new-window -d -t 3 -n "third" -c "$HOME"
+                tmux new-window -d -t 4 -n "dev" -c "$HOME/dev"
+                tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
+                tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
+                tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
+                tmux new-window -d -t 8 -n ".dotfiles" -c "$HOME/.dotfiles"
+                tmux new-window -d -t 9 -n "last" -c "$HOME"
+                # attach to new session
+                tmux attach-session -t 0
+            fi
+
+        fi
+    fi
+fi
