@@ -1,8 +1,6 @@
 # ZSH
 ## Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-## Load oh-my-zsh
-source $ZSH/oh-my-zsh.sh
 ## Plugins
 plugins=(
   git
@@ -10,20 +8,21 @@ plugins=(
   zsh-syntax-highlighting
   zsh-autosuggestions
   ohmyzsh-full-autoupdate
-  #vi-mode
 )
-## if not in MC shell add vi-mode
+## Conditional plugings, if not in MC shell add vi-mode
 if [ -z "$MC_SID" ]; then
   plugins+=(vi-mode)
 fi
+## Enable cursor changes for vi-mode
+export VI_MODE_SET_CURSOR=true
+## Load oh-my-zsh
+source $ZSH/oh-my-zsh.sh
 ## ZSH system clipboard plugin: https://github.com/kutsan/zsh-system-clipboard
 source "${ZSH_CUSTOM:-~/.zsh}/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh"
 ## enable vi mode
 bindkey -v
 ## enable escape on jk in insert mode
 bindkey -M viins 'jk' vi-cmd-mode
-## https://github.com/mcornella/ohmyzsh/blob/master/plugins/vi-mode/README.md
-export VI_MODE_SET_CURSOR=true
 ## ZSH fix slow paste
 zstyle ':bracketed-paste-magic' active-widgets '.self-*'
 ## ZSH disable matches
