@@ -98,18 +98,18 @@ if [ -f $(which thefuck) ]; then
 fi
 
 # PATHS
-# My BIN
+## My BIN
 export PATH=$PATH:$HOME/bin
-# /Users/sjc-lp03734/.local/bin path
+## /Users/sjc-lp03734/.local/bin path
 export PATH=$PATH:$HOME/.local/bin
-# mysql
+## mysql
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
-# NVM
+## NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh" # This loads nvm
-# Krew
+## Krew
 export PATH="${PATH}:${HOME}/.krew/bin"
-# Postgresql path
+## Postgresql path
 export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 
 # ALIASES
