@@ -46,7 +46,6 @@ fi
 # FZF
 ## fzf https://github.com/junegunn/fzf#using-git
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 ## fancy preview for fzf
 export FZF_CTRL_R_OPTS="--preview 'echo {2..}'
   --preview-window wrap:top:20%
