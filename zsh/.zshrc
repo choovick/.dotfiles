@@ -29,7 +29,6 @@ source $ZSH/oh-my-zsh.sh
 bindkey -v
 # enable escape on jk in insert mode
 bindkey -M viins 'jk' vi-cmd-mode
-bindkey -M viins 'jj' vi-cmd-mode
 # https://github.com/mcornella/ohmyzsh/blob/master/plugins/vi-mode/README.md
 VI_MODE_SET_CURSOR=true
 
@@ -247,7 +246,6 @@ export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 # NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"                                       # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
 # MC editor
 export EDITOR=nvim
@@ -292,9 +290,6 @@ fi
 alias la='ls -lah'
 alias ll='ls -lah'
 
-# open all below directories in tmux panes
-alias splitdirs='for dir in */; do tmux split-window -v "cd '\''$dir'\'' && exec $SHELL"; tmux select-layout tiled; done'
-
 # aws profile selector
 alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
 # alias aws-profile to ap
@@ -308,13 +303,6 @@ alias display-restore='displayplacer "id:2997316B-A423-47EA-8390-865F1276C0E2 re
 
 # krew
 export PATH="${PATH}:${HOME}/.krew/bin"
-
-# helm autocomplete
-source <(helm completion zsh)
-
-# aws autocomplete
-# only if installed
-[ -f $(which aws_completer) ] && complete -C $(which aws_completer) aws
 
 # Idea fix to use COMMAND ARROWS
 bindkey "\e\eOD" beginning-of-line
@@ -361,13 +349,6 @@ if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PRO
   fi
 fi
 
-# TF autocomplet/e
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C "${TF_BIN}" "${TF_BIN}"
-
-# Check if stern is installed if so enable completion
-[ -f $(which stern) ] && source <(stern --completion=zsh)
-
 # Yazi
 function y() {
   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -382,8 +363,6 @@ function y() {
 if [ -f ~/.zshrc-local ]; then
   source ~/.zshrc-local
 fi
-
-complete -o nospace -C /usr/local/bin/tofu tofu
 
 # Added by Windsurf
 export PATH="/Users/sjc-lp03734/.codeium/windsurf/bin:$PATH"
@@ -406,4 +385,13 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 # Atuin integration - check if atuin is installed
 if command -v atuin &> /dev/null; then
     eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# check if carapace is installed and source it
+if [ -f $(which carapace) ]; then
+  # https://carapace-sh.github.io/carapace-bin/setup.html#zsh
+  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+  zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+  source <(carapace _carapace)
+  zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 fi
