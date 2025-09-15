@@ -7,9 +7,9 @@
     "bash": "ask"
   },
   "mcp": {
-    "g-search": {
+  "web-search": {
       "type": "local",
-      "command": ["npx", "-y", "g-search-mcp"],
+      "command": ["npx", "-y", "pskill9/web-search"],
       "enabled": true
     }
   }
