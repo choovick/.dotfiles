@@ -62,15 +62,26 @@ return {
       end,
     })
 
-    -- Diagnostic symbols
-    local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-    end
+    -- Configure diagnostics with modern API
+    vim.diagnostic.config({
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = "󰅙 ",
+          [vim.diagnostic.severity.WARN] = "󰀪 ",
+          [vim.diagnostic.severity.HINT] = "󰠠 ",
+          [vim.diagnostic.severity.INFO] = "󰋼 ",
+        },
+        -- currently signs are below on priority list
+        -- priority = 5
+      },
+      virtual_lines = {
+        -- Only show virtual line diagnostics for the current cursor line
+        current_line = true,
+      },
+    })
 
     -- Get blink.cmp capabilities
-    local capabilities = require('blink.cmp').get_lsp_capabilities()
+    local capabilities = require("blink.cmp").get_lsp_capabilities()
 
     -- Enable LSP servers with blink.cmp capabilities
     local servers = {
@@ -86,7 +97,7 @@ return {
 
     for _, server in ipairs(servers) do
       vim.lsp.enable(server, {
-        capabilities = capabilities
+        capabilities = capabilities,
       })
     end
   end,
