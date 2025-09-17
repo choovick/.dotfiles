@@ -1,0 +1,18 @@
+[mcp_servers."web-search"]
+command = "npx"
+args = ["-y", "pskill9/web-search"]
+enabled = true
+
+[mcp_servers."terraform"]
+command = "docker"
+args = ["run", "-i", "--rm", "hashicorp/terraform-mcp-server:latest"]
+enabled = true
+
+[mcp_servers."context7"]
+command = "docker"
+args = [
+  "run", "-i", "--rm",
+  "ghcr.io/sparfenyuk/mcp-proxy:latest",
+  "https://mcp.context7.com/mcp"
+]
+enabled = true
