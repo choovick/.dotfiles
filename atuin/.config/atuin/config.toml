@@ -162,7 +162,7 @@ enter_accept = true
 
 
 # Store failed
-store_failed = false
+store_failed = true
 
 ## Defaults to false. If enabled, when triggered after && or ||, Atuin will complete commands to chain rather than replace the current line.
 # command_chaining = false
