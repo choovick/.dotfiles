@@ -484,9 +484,5 @@ vim.keymap.set("n", "<leader>wx", function()
 end, { desc = "Close all buffers except the current one (skip nvim-tree)" })
 
 vim.keymap.set("n", "<leader>Z", function()
-  require("zen-mode").toggle({
-    window = {
-      width = 0.90, -- width will be 85% of the editor width
-    },
-  })
-end, { desc = "Toggle zoom" })
+  Snacks.zen()
+end, { desc = "Toggle Zen Mode" })
