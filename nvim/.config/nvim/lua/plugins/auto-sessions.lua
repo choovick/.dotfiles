@@ -6,7 +6,7 @@ return {
     local auto_session = require("auto-session")
 
     auto_session.setup({
-      enabled = false, -- Enables/disables auto creating, saving and restoring
+      enabled = true, -- Enables/disables auto creating, saving and restoring
       root_dir = vim.fn.stdpath("data") .. "/sessions/", -- Root dir where sessions will be stored
       auto_save = true, -- Enables/disables auto saving session on exit
       auto_restore = false, -- Enables/disables auto restoring session on start
@@ -44,8 +44,8 @@ return {
 
   keys = {
     -- Will use Telescope if installed or a vim.ui.select picker otherwise
-    { "<leader>wr", "<cmd>SessionSearch<CR>", desc = "Session search" },
-    { "<leader>ws", "<cmd>SessionSave<CR>", desc = "Save session" },
-    { "<leader>wa", "<cmd>SessionToggleAutoSave<CR>", desc = "Toggle autosave" },
+    { "<leader>wr", "<cmd>AutoSession search<CR>", desc = "Session search" },
+    { "<leader>ws", "<cmd>AutoSession save<CR>", desc = "Save session" },
+    { "<leader>wa", "<cmd>AutoSession toggle<CR>", desc = "Toggle autosave" },
   },
 }
