@@ -89,7 +89,9 @@ end, { desc = "[Resume] Fuzzy find files in current buffer dir" })
 
 keymap.set("n", "<leader>fr", function()
   require("snacks").picker.recent({
-    cwd_only = true,
+    filter = {
+      cwd = true, -- Only show files from current working directory
+    },
     include_current_session = true,
     resume = false,
   })
