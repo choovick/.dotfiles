@@ -12,6 +12,10 @@ return {
         input = {
           keys = {
             ["<C-c>"] = { "close", mode = { "n", "i" } },
+            ["<C-Up>"] = false,
+            ["<C-Down>"] = false,
+            ["<M-k>"] = "history_back",
+            ["<M-j>"] = "history_forward",
           },
         },
       },
