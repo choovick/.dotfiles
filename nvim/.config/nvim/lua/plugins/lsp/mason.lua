@@ -45,7 +45,7 @@ return {
         "isort", -- python formatter
         "black", -- python formatter
         "shellcheck", -- shell script linter
-        "copilot-language-server", -- GitHub Copilot LSP
+        -- "copilot-language-server", -- GitHub Copilot LSP - disabled, using copilot.lua instead
       },
     })
   end,

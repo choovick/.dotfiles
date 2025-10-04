@@ -101,7 +101,7 @@ return {
       "yamlls",
       "helm_ls",
       "kcl",
-      "copilot",
+      -- "copilot", -- disabled - using copilot.lua instead
     }
 
     for _, server in ipairs(servers) do
