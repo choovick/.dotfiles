@@ -17,15 +17,21 @@ return {
 
         -- LSP keybindings
         opts.desc = "Show LSP references"
-        keymap.set("n", "gr", "<cmd>FzfLua lsp_references<CR>", opts)
+        keymap.set("n", "gr", function()
+          require("snacks").picker.lsp_references()
+        end, opts)
         opts.desc = "Go to declaration"
         keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
         opts.desc = "Go to definition"
         keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         opts.desc = "Show LSP implementations"
-        keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations<CR>", opts)
+        keymap.set("n", "gi", function()
+          require("snacks").picker.lsp_implementations()
+        end, opts)
         opts.desc = "Show LSP type definitions"
-        keymap.set("n", "gt", "<cmd>FzfLua lsp_type_definitions<CR>", opts)
+        keymap.set("n", "gt", function()
+          require("snacks").picker.lsp_type_definitions()
+        end, opts)
         opts.desc = "See available code actions"
         keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
         opts.desc = "Smart rename"
@@ -33,7 +39,9 @@ return {
         opts.desc = "Show documentation for what is under cursor"
         keymap.set("n", "K", vim.lsp.buf.hover, opts)
         opts.desc = "Show buffer diagnostics"
-        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
+        keymap.set("n", "<leader>D", function()
+          require("snacks").picker.diagnostics()
+        end, opts)
         opts.desc = "Show line diagnostics"
         keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
         opts.desc = "Go to previous diagnostic"

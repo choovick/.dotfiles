@@ -6,5 +6,36 @@ return {
     bigfile = { enabled = true },
     quickfile = { enabled = true },
     statuscolumn = { enabled = true },
+    picker = {
+      enabled = true,
+      win = {
+        input = {
+          keys = {
+            ["<C-c>"] = { "close", mode = { "n", "i" } },
+          },
+        },
+      },
+      layout = {
+        layout = {
+          box = "horizontal",
+          width =0.95,
+          min_width = 120,
+          height = 0.95,
+          {
+            box = "vertical",
+            border = "rounded",
+            title = "{title} {live} {flags}",
+            { win = "input", height = 1, border = "bottom" },
+            { win = "list", border = "none" },
+          },
+          { win = "preview", title = "{preview}", border = "rounded", width = 0.5 },
+        },
+      },
+      sources = {
+        files = {
+          hidden = true,
+        },
+      },
+    },
   },
 }

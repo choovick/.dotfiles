@@ -68,37 +68,34 @@ keymap.set("n", "<leader>qp", "<cmd>cprev<CR>", { desc = "Go to previous quickfi
 -- NAVIGATION/FINDING
 -- keymap.set("n", "<leader>ff", "<cmd>Telescope find_files follow=true<cr>", { desc = "Fuzzy find files in cwd" })
 keymap.set("n", "<leader> ", function()
-  require("fzf-lua").files({
+  require("snacks").picker.files({
     resume = false,
   })
 end, { desc = "Fuzzy find files in cwd" })
 
 keymap.set("n", "<leader>ff", function()
-  -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
-  require("fzf-lua").files({
+  require("snacks").picker.files({
     cwd = vim.fn.expand("%:p:h"),
     resume = false,
   })
 end, { desc = "Fuzzy find files in current buffer dir" })
 
 keymap.set("n", "<leader>fF", function()
-  -- require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h"), follow = true })
-  require("fzf-lua").files({
+  require("snacks").picker.files({
     cwd = vim.fn.expand("%:p:h"),
     resume = true,
   })
 end, { desc = "[Resume] Fuzzy find files in current buffer dir" })
 
 keymap.set("n", "<leader>fr", function()
-  require("fzf-lua").oldfiles({
+  require("snacks").picker.recent({
     cwd_only = true,
-    -- show old files in current session as well
     include_current_session = true,
     resume = false,
   })
 end, { desc = "Old files in current dir" })
 keymap.set("n", "<leader>fR", function()
-  require("fzf-lua").oldfiles()
+  require("snacks").picker.recent()
 end, { desc = "Fuzzy find recent files across sessions" })
 
 -- <leader>fx to delete buffer/close tab
@@ -107,29 +104,33 @@ keymap.set("n", "<leader>fx", "<cmd>BufferDelete<CR>", { desc = "Close buffer" }
 keymap.set("n", "<leader>fN", "<cmd>enew<CR>", { desc = "New buffer" })
 
 keymap.set("n", "<leader>fs", function()
-  require("fzf-lua").live_grep({
+  require("snacks").picker.grep({
     cwd = vim.fn.getcwd(),
     resume = false,
   })
 end, { desc = "Live grep with rg --glob support" })
 
 keymap.set("n", "<leader>fd", function()
-  require("fzf-lua").live_grep({
+  require("snacks").picker.grep({
     cwd = vim.fn.expand("%:p:h"),
     resume = false,
   })
 end, { desc = "Live grep in current buffer directory" })
 
 keymap.set("n", "<leader>fD", function()
-  require("fzf-lua").live_grep({
+  require("snacks").picker.grep({
     cwd = vim.fn.expand("%:p:h"),
     resume = true,
   })
 end, { desc = "[Resume]Live grep in current buffer directory" })
 
-keymap.set("n", "<leader>fc", "<cmd>FzfLua grep_cword<cr>", { desc = "Find string under cursor in cwd" })
+keymap.set("n", "<leader>fc", function()
+  require("snacks").picker.grep({ search = vim.fn.expand("<cword>") })
+end, { desc = "Find string under cursor in cwd" })
 
-keymap.set("n", "<leader>fl", "<cmd>FzfLua lgrep_curbuf resume=true<cr>", { desc = "Live grep in current buffer" })
+keymap.set("n", "<leader>fl", function()
+  require("snacks").picker.grep_buffers()
+end, { desc = "Live grep in current buffer" })
 
 keymap.set("n", "<leader>fa", function()
   require("grug-far").toggle_instance({ instanceName = "far", staticTitle = "Find and Replace" })
@@ -209,8 +210,12 @@ keymap.set("v", "<leader>fa", function()
 end, { desc = "Open GrugFar for find and replace" })
 
 keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
-keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = "Select Buffer" })
-keymap.set("n", "<leader>fL", "<cmd>FzfLua blines<cr>", { desc = "Search in current Buffer" })
+keymap.set("n", "<leader>fb", function()
+  require("snacks").picker.buffers()
+end, { desc = "Select Buffer" })
+keymap.set("n", "<leader>fL", function()
+  require("snacks").picker.lines()
+end, { desc = "Search in current Buffer" })
 
 -- leader fy to yank current file path relative to cwd in n or v mode
 keymap.set({ "n", "v" }, "<leader>fy", function()
@@ -399,10 +404,14 @@ keymap.set("n", "<leader>ad", ":DiffLastTwo<CR>", { desc = "Compare Last Two Buf
 -- add action to toggle word wrap
 keymap.set("n", "<leader>aw", "<cmd>set wrap!<CR>", { desc = "Toggle word wrap" })
 
--- override q: wiht FzfLua command_history
-keymap.set({ "n", "v" }, ";", "<cmd>FzfLua command_history<cr>", { desc = "Command history" })
--- leader : to open FzfLua commands
-keymap.set({ "n", "v" }, "<leader>:", "<cmd>FzfLua commands<cr>", { desc = "FzfLua commands" })
+-- override q: with snacks picker command_history
+keymap.set({ "n", "v" }, ";", function()
+  require("snacks").picker.command_history()
+end, { desc = "Command history" })
+-- leader : to open snacks picker commands
+keymap.set({ "n", "v" }, "<leader>:", function()
+  require("snacks").picker.commands()
+end, { desc = "Snacks picker commands" })
 
 -- Create a new tmux pane with the current file's directory or current working directory
 vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
