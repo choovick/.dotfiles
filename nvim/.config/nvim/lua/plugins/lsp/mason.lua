@@ -29,7 +29,7 @@ return {
       ensure_installed = {
         "lua_ls",
         "pyright",
-        "terraformls", 
+        "terraformls",
         "graphql",
         "bashls",
         "yamlls",
@@ -45,6 +45,7 @@ return {
         "isort", -- python formatter
         "black", -- python formatter
         "shellcheck", -- shell script linter
+        "copilot-language-server", -- GitHub Copilot LSP
       },
     })
   end,

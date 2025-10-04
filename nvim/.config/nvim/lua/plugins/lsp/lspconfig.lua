@@ -93,6 +93,7 @@ return {
       "yamlls",
       "helm_ls",
       "kcl",
+      "copilot",
     }
 
     for _, server in ipairs(servers) do
