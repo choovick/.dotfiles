@@ -8,18 +8,9 @@ return {
     statuscolumn = { enabled = true },
     zen = {
       enabled = true,
-      toggles = {
-        dim = true,
-        git_signs = false,
-        mini_diff_signs = false,
-      },
-      show = {
-        statusline = false,
-        tabline = false,
-      },
       win = {
         style = "zen",
-        width = 0.90,
+        width = 0,
       },
     },
     picker = {
