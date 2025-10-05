@@ -15,6 +15,15 @@ return {
     },
     picker = {
       enabled = true,
+      formatters = {
+        file = {
+          filename_first = true, -- display filename before the file path
+          truncate = 200, -- truncate the file path to (roughly) this length
+          filename_only = false, -- only show the filename
+          icon_width = 2, -- width of the icon (in characters)
+          git_status_hl = true, -- use the git status highlight group for the filename
+        },
+      },
       win = {
         input = {
           keys = {
@@ -29,7 +38,7 @@ return {
       layout = {
         layout = {
           box = "horizontal",
-          width =0.95,
+          width = 0.95,
           min_width = 120,
           height = 0.95,
           {
