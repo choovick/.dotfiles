@@ -1,7 +1,5 @@
 return {
   "linux-cultist/venv-selector.nvim",
-  -- TODO: fix error
-  enabled = false,
   dependencies = {
     "neovim/nvim-lspconfig",
     "nvim-telescope/telescope.nvim",

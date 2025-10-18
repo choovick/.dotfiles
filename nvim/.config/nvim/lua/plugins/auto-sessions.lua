@@ -27,14 +27,15 @@ return {
 
       cwd_change_handling = true, -- Follow cwd changes, saving a session before change and restoring after
 
-      pre_save_cmds = {
-        -- Close NvimTree before saving session
-        -- "NvimTreeClose",
+      pre_restore_cmds = {
+        function()
+          require("nvim-tree.api").tree.close()
+        end,
       },
-
       post_restore_cmds = {
-        -- Open NvimTree after session restore
-        "NvimTreeOpen",
+        function()
+          require("nvim-tree.api").tree.open()
+        end,
       },
 
       lsp_stop_on_restore = false, -- Should language servers be stopped when restoring a session. Can also be a function that will be called if set. Not called on autorestore from startup

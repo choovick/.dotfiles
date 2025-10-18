@@ -65,14 +65,10 @@ keymap.set("n", "<leader>qc", "<cmd>cclose<CR>", { desc = "Close quickfix" }) --
 keymap.set("n", "<leader>qn", "<cmd>cnext<CR>", { desc = "Go to next quickfix" }) -- go to next quickfix
 keymap.set("n", "<leader>qp", "<cmd>cprev<CR>", { desc = "Go to previous quickfix" }) -- go to previous quickfix
 
--- NAVIGATION/FINDING
--- keymap.set("n", "<leader>ff", "<cmd>Telescope find_files follow=true<cr>", { desc = "Fuzzy find files in cwd" })
-
 -- <leader>fx to delete buffer/close tab
 keymap.set("n", "<leader>fx", "<cmd>BufferDelete<CR>", { desc = "Close buffer" })
 -- <leader>fN to create new buffer
 keymap.set("n", "<leader>fN", "<cmd>enew<CR>", { desc = "New buffer" })
-
 keymap.set("n", "<leader>fa", function()
   require("grug-far").toggle_instance({ instanceName = "far", staticTitle = "Find and Replace" })
 end, { desc = "Open GrugFar for find and replace" })
@@ -149,8 +145,6 @@ keymap.set("v", "<leader>fa", function()
     { transient = true },
   })
 end, { desc = "Open GrugFar for find and replace" })
-
-keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
 
 -- leader fy to yank current file path relative to cwd in n or v mode
 keymap.set({ "n", "v" }, "<leader>fy", function()
@@ -339,6 +333,10 @@ keymap.set("n", "<leader>ad", ":DiffLastTwo<CR>", { desc = "Compare Last Two Buf
 -- add action to toggle word wrap
 keymap.set("n", "<leader>aw", "<cmd>set wrap!<CR>", { desc = "Toggle word wrap" })
 
+-- override q: wiht FzfLua command_history
+keymap.set({ "n", "v" }, ";", "<cmd>FzfLua command_history<cr>", { desc = "Command history" })
+-- leader : to open FzfLua commands
+keymap.set({ "n", "v" }, "<leader>:", "<cmd>FzfLua commands<cr>", { desc = "FzfLua commands" })
 
 -- Create a new tmux pane with the current file's directory or current working directory
 vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
@@ -409,5 +407,9 @@ vim.keymap.set("n", "<leader>wx", function()
 end, { desc = "Close all buffers except the current one (skip nvim-tree)" })
 
 vim.keymap.set("n", "<leader>Z", function()
-  Snacks.zen()
-end, { desc = "Toggle Zen Mode" })
+  require("zen-mode").toggle({
+    window = {
+      width = 0.90, -- width will be 85% of the editor width
+    },
+  })
+end, { desc = "Toggle zoom" })

@@ -1,5 +1,6 @@
 return {
   "zbirenbaum/copilot.lua",
+  -- enabled = false,
   cmd = "Copilot",
   event = "InsertEnter",
   build = ":Copilot auth",
@@ -34,5 +35,10 @@ return {
         return true
       end,
     },
+  },
+  -- hotkeys lazy
+  keys = {
+    -- leader o r to disable/enable copilot in the single hotkey
+    { "<leader>or", "<cmd>Copilot disable<CR><cmd>Copilot enable<CR>", desc = "Copilot Disable/Enable" },
   },
 }
