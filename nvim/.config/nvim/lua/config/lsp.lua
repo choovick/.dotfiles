@@ -111,7 +111,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       for _, lsp_client in ipairs(clients) do
         if lsp_client.name ~= "copilot" then
           table.insert(client_names, lsp_client.name)
-          lsp_client.stop(false)
+          lsp_client.stop()
         end
       end
 
