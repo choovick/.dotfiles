@@ -3,14 +3,14 @@
 
 -- Enable the LSP servers
 local servers = {
-  'lua_ls',
-  'pyright',
-  'terraformls',
-  'graphql',
-  'bashls',
-  'yamlls',
-  'helm_ls',
-  'kcl',
+  "lua_ls",
+  "pyright",
+  "terraformls",
+  "graphql",
+  "bashls",
+  "yamlls",
+  "helm_ls",
+  "kcl",
 }
 
 for _, server in ipairs(servers) do
@@ -18,7 +18,7 @@ for _, server in ipairs(servers) do
 end
 
 -- LSP attach configuration
-vim.api.nvim_create_autocmd('LspAttach', {
+vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -26,11 +26,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Enable native completion if client supports it
     if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
-      vim.opt_local.completeopt = { 'menu', 'menuone', 'noinsert' }
+      vim.opt_local.completeopt = { "menu", "menuone", "noinsert" }
       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 
       -- Manual completion trigger
-      vim.keymap.set('i', '<C-Space>', function()
+      vim.keymap.set("i", "<C-Space>", function()
         vim.lsp.completion.get()
       end, { buffer = bufnr, desc = "Trigger LSP completion" })
     end
@@ -39,42 +39,65 @@ vim.api.nvim_create_autocmd('LspAttach', {
     local opts = { buffer = bufnr, silent = true }
 
     -- Override references to use FzfLua
-    vim.keymap.set("n", "gr", "<cmd>FzfLua lsp_references<CR>",
-      vim.tbl_extend("force", opts, { desc = "Show LSP references" }))
+    vim.keymap.set(
+      "n",
+      "gr",
+      "<cmd>FzfLua lsp_references<CR>",
+      vim.tbl_extend("force", opts, { desc = "Show LSP references" })
+    )
 
     -- Override default mappings to use preferred tools
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration,
-      vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
 
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition,
-      vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
 
-    vim.keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations<CR>",
-      vim.tbl_extend("force", opts, { desc = "Show LSP implementations" }))
+    vim.keymap.set(
+      "n",
+      "gi",
+      "<cmd>FzfLua lsp_implementations<CR>",
+      vim.tbl_extend("force", opts, { desc = "Show LSP implementations" })
+    )
 
-    vim.keymap.set("n", "gt", "<cmd>FzfLua lsp_type_definitions<CR>",
-      vim.tbl_extend("force", opts, { desc = "Show LSP type definitions" }))
+    vim.keymap.set(
+      "n",
+      "gt",
+      "<cmd>FzfLua lsp_type_definitions<CR>",
+      vim.tbl_extend("force", opts, { desc = "Show LSP type definitions" })
+    )
 
-    vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
-      vim.tbl_extend("force", opts, { desc = "See available code actions" }))
+    vim.keymap.set(
+      { "n", "v" },
+      "<leader>ca",
+      vim.lsp.buf.code_action,
+      vim.tbl_extend("force", opts, { desc = "See available code actions" })
+    )
 
-    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename,
-      vim.tbl_extend("force", opts, { desc = "Smart rename" }))
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Smart rename" }))
 
     -- Diagnostic keybindings
-    vim.keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>",
-      vim.tbl_extend("force", opts, { desc = "Show buffer diagnostics" }))
+    vim.keymap.set(
+      "n",
+      "<leader>D",
+      "<cmd>Telescope diagnostics bufnr=0<CR>",
+      vim.tbl_extend("force", opts, { desc = "Show buffer diagnostics" })
+    )
 
-    vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float,
-      vim.tbl_extend("force", opts, { desc = "Show line diagnostics" }))
+    vim.keymap.set(
+      "n",
+      "<leader>d",
+      vim.diagnostic.open_float,
+      vim.tbl_extend("force", opts, { desc = "Show line diagnostics" })
+    )
 
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev,
-      vim.tbl_extend("force", opts, { desc = "Go to previous diagnostic" }))
+    vim.keymap.set("n", "<leader>xN", function()
+      vim.diagnostic.jump({ count = -1, float = true })
+    end, vim.tbl_extend("force", opts, { desc = "Go to previous diagnostic" }))
 
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next,
-      vim.tbl_extend("force", opts, { desc = "Go to next diagnostic" }))
+    vim.keymap.set("n", "<leader>xn", function()
+      vim.diagnostic.jump({ count = 1, float = true })
+    end, vim.tbl_extend("force", opts, { desc = "Go to next diagnostic" }))
 
-    -- LSP restart keybinding
+    -- LSP rstart keybinding
     vim.keymap.set("n", "<leader>r", function()
       local buf = vim.api.nvim_get_current_buf()
       local clients = vim.lsp.get_clients({ bufnr = buf })
@@ -85,10 +108,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
       end
 
       local client_names = {}
-      for _, client in ipairs(clients) do
-        if client.name ~= "copilot" then
-          table.insert(client_names, client.name)
-          client.stop()
+      for _, lsp_client in ipairs(clients) do
+        if lsp_client.name ~= "copilot" then
+          table.insert(client_names, lsp_client.name)
+          lsp_client.stop(false)
         end
       end
 
