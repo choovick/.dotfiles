@@ -3,9 +3,6 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   main = "ibl",
   config = function()
-    -- require("ibl").setup({
-    --   indent = { char = "┊" },
-    -- })
     local highlight = {
       "RainbowRed",
       "RainbowYellow",
