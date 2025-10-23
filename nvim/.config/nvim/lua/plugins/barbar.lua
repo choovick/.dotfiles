@@ -9,6 +9,10 @@ return {
     init = function()
       vim.g.barbar_auto_setup = false
     end,
+    keys = {
+      { "<C-n>", "<cmd>BufferPrevious<CR>", desc = "Previous buffer" },
+      { "<C-m>", "<cmd>BufferNext<CR>", desc = "Next buffer" },
+    },
     opts = {
       -- https://github.com/romgrk/barbar.nvim?tab=readme-ov-file#options
 

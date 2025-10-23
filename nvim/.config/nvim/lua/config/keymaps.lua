@@ -43,11 +43,6 @@ keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- 
 keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
 -- BUFFER MANAGEMENT
--- CTRL-n prev buffer
-keymap.set("n", "<C-n>", "<cmd>bp<CR>", { desc = "Previous buffer" })
--- CTRL-m next buffer
-keymap.set("n", "<C-m>", "<cmd>bn<CR>", { desc = "Next buffer" })
-
 -- close buffer without removing split, leave last buffer
 keymap.set("n", "<leader>sX", "<cmd>bp <bar> bd #<CR>", { desc = "Close buffer" })
 
