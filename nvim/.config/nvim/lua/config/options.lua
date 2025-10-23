@@ -154,3 +154,122 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     vim.cmd("highlight NvimTreeWindowPicker guifg=#4E4E4E guibg=#FFAF01 gui=bold")
   end,
 })
+
+-- Auto-resize nvim-tree when first non-nvim-tree buffer is opened in session
+local auto_resize_triggered = false
+local timer_running = false
+local debug_enabled = false -- Set to true to enable debug messages
+local autocmd_id = nil
+
+local function auto_resize_nvim_tree()
+  if debug_enabled then
+    print("RESIZE: Called - triggered:", auto_resize_triggered, "timer_running:", timer_running)
+  end
+
+  -- If already triggered or timer is running, do nothing
+  if auto_resize_triggered or timer_running then
+    return
+  end
+
+  local current_buf = vim.api.nvim_get_current_buf()
+  local buf_name = vim.api.nvim_buf_get_name(current_buf)
+  local buftype = vim.bo[current_buf].buftype
+
+  if debug_enabled then
+    print("RESIZE: Buffer:", buf_name, "type:", buftype)
+  end
+
+  -- Check if this is a real file (not directory, not nvim-tree, not empty)
+  local is_real_file = buf_name ~= "" and
+                      buftype == "" and
+                      not buf_name:match("NvimTree") and
+                      vim.fn.isdirectory(buf_name) == 0 and
+                      vim.fn.filereadable(buf_name) == 1
+
+  if debug_enabled then
+    print("RESIZE: is_real_file:", is_real_file, "isdirectory:", vim.fn.isdirectory(buf_name), "filereadable:", vim.fn.filereadable(buf_name))
+  end
+
+  if is_real_file then
+    if debug_enabled then
+      print("RESIZE: Starting timer")
+    end
+    timer_running = true
+
+    -- Use a timer to check if nvim-tree becomes visible
+    local timer = vim.loop.new_timer()
+    local attempts = 0
+    local max_attempts = 10
+    local timer_closed = false
+
+    local function cleanup_timer()
+      if not timer_closed then
+        timer_closed = true
+        timer_running = false
+        if timer and not timer:is_closing() then
+          timer:stop()
+          timer:close()
+        end
+      end
+    end
+
+    timer:start(100, 100, vim.schedule_wrap(function()
+      if timer_closed then
+        return
+      end
+
+      attempts = attempts + 1
+
+      local ok, tree_view = pcall(require, "nvim-tree.view")
+      if ok then
+        local is_visible = tree_view.is_visible()
+        if debug_enabled then
+          print("RESIZE: Attempt", attempts, "visible:", is_visible)
+        end
+
+        if is_visible then
+          local tree_api_ok, tree_api = pcall(require, "nvim-tree.api")
+          if tree_api_ok then
+            local new_width = 40
+            tree_api.tree.resize({ absolute = new_width })
+            auto_resize_triggered = true
+            if debug_enabled then
+              print("RESIZE: DONE!")
+            end
+
+            -- Remove the autocmd callback since we're done
+            if autocmd_id then
+              vim.api.nvim_del_autocmd(autocmd_id)
+              if debug_enabled then
+                print("RESIZE: Autocmd removed")
+              end
+            end
+          end
+          cleanup_timer()
+        elseif attempts >= max_attempts then
+          if debug_enabled then
+            print("RESIZE: Max attempts reached")
+          end
+          cleanup_timer()
+        end
+      else
+        if attempts >= max_attempts then
+          cleanup_timer()
+        end
+      end
+    end))
+  else
+    if debug_enabled then
+      print("RESIZE: Buffer doesn't qualify")
+    end
+  end
+end
+
+-- Create autocmd to trigger auto-resize on any buffer creation/opening
+if debug_enabled then
+  print("AUTO-RESIZE: Setting up autocmd")
+end
+autocmd_id = vim.api.nvim_create_autocmd({ "BufNew", "BufAdd", "BufEnter", "BufWinEnter" }, {
+  callback = auto_resize_nvim_tree,
+  desc = "Auto-resize nvim-tree on first real buffer in session"
+})
