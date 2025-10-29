@@ -99,6 +99,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- LSP rstart keybinding
     vim.keymap.set("n", "<leader>r", function()
+      -- Gitsigns detach/attach workaround
+      vim.cmd("silent! Gitsigns detach")
+      vim.cmd("silent! Gitsigns attach")
+
       local buf = vim.api.nvim_get_current_buf()
       local clients = vim.lsp.get_clients({ bufnr = buf })
 
