@@ -145,7 +145,7 @@ alias ll='ls -lah'
 alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
 alias ap='aws-profile'
 ## displayplacer alias to restore my monitor setup
-alias display-restore='displayplacer "id:2997316B-A423-47EA-8390-865F1276C0E2 res:3096x1296 hz:100 color_depth:8 enabled:true scaling:on origin:(0,0) degree:0" "id:37D8832A-2D66-02CA-B9F7-8F30A301B230 res:1728x1117 hz:120 color_depth:8 enabled:true scaling:on origin:(-1728,0) degree:0" "id:33A9F171-8D5E-4A0A-8472-A882E0CEC299 res:1440x2560 hz:60 color_depth:8 enabled:true scaling:on origin:(3096,-466) degree:270"'
+alias display-restore='displayplacer "id:2997316B-A423-47EA-8390-865F1276C0E2 res:3440x1440 hz:100 color_depth:8 enabled:true scaling:off origin:(0,0) degree:0" "id:37D8832A-2D66-02CA-B9F7-8F30A301B230 res:1728x1117 hz:120 color_depth:8 enabled:true scaling:on origin:(-1728,0) degree:0" "id:33A9F171-8D5E-4A0A-8472-A882E0CEC299 res:1440x2560 hz:60 color_depth:8 enabled:true scaling:on origin:(3440,-466) degree:270"'
 
 # MODULES
 ## check if .zshrc-local exists and source it
@@ -194,3 +194,9 @@ if [ -f $(which carapace) ]; then
   source <(carapace _carapace)
   zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 fi
+
+# Added by Antigravity
+export PATH="/Users/sjc-lp03734/.antigravity/antigravity/bin:$PATH"
+
+# krew path
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
