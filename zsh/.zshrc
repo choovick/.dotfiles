@@ -123,8 +123,8 @@ alias k9='k9s --context $(kubectl config get-contexts -o name | fzf)'
 ## Terraform
 TF_BIN="tofu"
 alias tf="${TF_BIN}"
-alias tfa="${TF_BIN} apply"
-alias tfp="${TF_BIN} plan"
+alias tfa="terraprism --tofu apply"
+alias tfp="terraprism --tofu plan"
 alias tfi="${TF_BIN} init"
 function tff() {
   tf fmt -recursive "$(git rev-parse --show-toplevel)/terraform"
@@ -144,6 +144,18 @@ alias ll='ls -lah'
 ### AWS profile selector
 alias aws-profile='export AWS_PROFILE=$(aws configure list-profiles | fzf)'
 alias ap='aws-profile'
+### AWS assume role selector, uses the assume function from awsume
+aws-assume() {
+  local profiles
+  profiles=$(aws configure list-profiles | fzf --multi --header "TAB to select multiple, ENTER to confirm")
+  if [[ -n "$profiles" ]]; then
+    echo "$profiles" | while read -r p; do
+      echo "Assuming: $p"
+      assume -c "$p"
+    done
+  fi
+}
+alias aa='aws-assume'
 ## displayplacer alias to restore my monitor setup
 alias display-restore='displayplacer "id:2997316B-A423-47EA-8390-865F1276C0E2 res:3440x1440 hz:100 color_depth:8 enabled:true scaling:off origin:(0,0) degree:0" "id:37D8832A-2D66-02CA-B9F7-8F30A301B230 res:1728x1117 hz:120 color_depth:8 enabled:true scaling:on origin:(-1728,0) degree:0" "id:33A9F171-8D5E-4A0A-8472-A882E0CEC299 res:1440x2560 hz:60 color_depth:8 enabled:true scaling:on origin:(3440,-466) degree:270"'
 
