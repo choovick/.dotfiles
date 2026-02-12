@@ -16,7 +16,7 @@ k9s:
     # Enable mouse support. Default false
     enableMouse: true
     # Set to true to hide K9s header. Default false
-    headless: true
+    headless: false
     # Set to true to hide K9s logo. Default false
     logoless: false
     # Set to true to hide K9s crumbs. Default false
