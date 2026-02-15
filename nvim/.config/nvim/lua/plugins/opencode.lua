@@ -8,6 +8,11 @@ return {
     -- Install: npx -y opencode-openai-codex-auth@latest
     -- Login: opencode auth login
     -- Optional cleanup: npx -y opencode-openai-codex-auth@latest --uninstall
+    -- Cursor ACP plugin (Cursor models inside OpenCode):
+    -- https://github.com/Nomadcxx/opencode-cursor
+    -- Install: npm install -g @rama_nigg/open-cursor && open-cursor install
+    -- Auth: opencode auth login (choose "Other" -> provider id "cursor-acp")
+    -- Use model: cursor-acp/auto
     vim.g.opencode_opts = {
       -- https://github.com/NickvanDyke/opencode.nvim/blob/main/lua/opencode/config.lua
     }
