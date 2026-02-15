@@ -3,6 +3,11 @@ return {
   dependencies = { 'folke/snacks.nvim', },
   config = function()
     -- Set options via vim.g.opencode_opts as recommended
+    -- New machine setup note (Codex auth bridge):
+    -- https://github.com/numman-ali/opencode-openai-codex-auth
+    -- Install: npx -y opencode-openai-codex-auth@latest
+    -- Login: opencode auth login
+    -- Optional cleanup: npx -y opencode-openai-codex-auth@latest --uninstall
     vim.g.opencode_opts = {
       -- https://github.com/NickvanDyke/opencode.nvim/blob/main/lua/opencode/config.lua
     }
