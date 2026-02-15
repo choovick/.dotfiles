@@ -12,5 +12,8 @@
       "command": ["npx", "-y", "pskill9/web-search"],
       "enabled": true
     }
-  }
+  },
+  "plugin": [
+    "opencode-openai-codex-auth"
+  ]
 }
