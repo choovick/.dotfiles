@@ -19,7 +19,9 @@ return {
         timing = animate.gen_timing.linear({ duration = 50, unit = "total" }),
       },
       scroll = {
-        timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+        -- Fix: cap step at 5ms to prevent stuck scrolling when holding j with wrap enabled
+        -- See: https://github.com/echasnovski/mini.nvim/issues/1588
+        timing = function(_, n) return math.min(250 / n, 5) end,
         subscroll = animate.gen_subscroll.equal({
           predicate = function(total_scroll)
             if mouse_scrolled then
