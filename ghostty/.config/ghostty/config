@@ -1,5 +1,5 @@
 # Themes
-theme = dark:Gruvbox Dark,light:Builtin Light
+theme = dark:Gruvbox Dark,light: Gruvbox Light
 # brew install --cask font-jetbrains-mono-nerd-font
 font-family = JetBrainsMono Nerd Font Propo
 minimum-contrast = 1.1
