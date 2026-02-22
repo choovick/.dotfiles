@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 local config = {}
 
 -- font
-config.font = wezterm.font("Hack Nerd Font Propo", {})
+config.font = wezterm.font("JetBrainsMono Nerd Font Propo", { weight = "DemiBold" })
 config.font_size = 16
 
 config.max_fps = 120
