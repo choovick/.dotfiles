@@ -103,36 +103,45 @@ function y() {
   rm -f -- "$tmp"
 }
 
-# TMUX startup
-# check if $TERM_PROGRAM == iTerm.app variable set to identify terminal
+# TMUX auto-start for interactive terminal apps.
+# Scope this logic to terminal emulators we use for tmux sessions.
 if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PROGRAM" = "ghostty" ]]; then
-  # tmux process detection, only go here is we are not in tmux
+  # Skip when we are already inside tmux.
   if [ "$TMUX" = "" ]; then
+    # Avoid nested tmux from Neovim terminal buffers.
     if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
       echo "We are in nvim terminal"
     else
-      # only attach if not in ghostty quick terminal,  lines are static and based on theme. 14 in my case
-      # idea from: https://github.com/ghostty-org/ghostty/discussions/3985#discussioncomment-11805584
-      if [[ $(tput lines) != 14 ]]; then
-        tmux attach-session -t 0
+      # Session routing:
+      # - Ghostty quick terminal: session "quick"
+      # - Normal terminals: session "main"
+      tmux_session="main"
+      is_quick_terminal="0"
+      if [[ -n "$GHOSTTY_QUICK_TERMINAL" ]]; then
+        tmux_session="quick"
+        is_quick_terminal="1"
       fi
+      tmux attach-session -t "$tmux_session"
 
-      # if above fails, create new session with non 0 exit code
+      # If attach fails, create the target session.
       if [ $? -ne 0 ]; then
-        # session setup in background
-        tmux new-session -s 0 -d
-        # windows setup
-        #tmux kill-window -t 0
-        tmux new-window -d -t 2 -n "sec" -c "$HOME"
-        tmux new-window -d -t 3 -n "third" -c "$HOME"
-        tmux new-window -d -t 4 -n "dev" -c "$HOME/dev"
-        tmux new-window -d -t 5 -n "infra" -c "$HOME/dev/infrastructure"
-        tmux new-window -d -t 6 -n "temp" -c "$HOME/temp"
-        tmux new-window -d -t 7 -n "Downloads" -c "$HOME/Downloads"
-        tmux new-window -d -t 8 -n ".dotfiles" -c "$HOME/.dotfiles"
-        tmux new-window -d -t 9 -n "last" -c "$HOME"
-        # attach to new session
-        tmux attach-session -t 0
+        # Create detached session first so it can be initialized before attach.
+        tmux new-session -s "$tmux_session" -d
+        # Only provision the standard window layout in non-quick mode.
+        # Quick terminal should use the existing session layout as-is.
+        if [[ "$is_quick_terminal" = "0" ]]; then
+          #tmux kill-window -t "${tmux_session}:1"
+          tmux new-window -d -t "${tmux_session}:2" -n "sec" -c "$HOME"
+          tmux new-window -d -t "${tmux_session}:3" -n "third" -c "$HOME"
+          tmux new-window -d -t "${tmux_session}:4" -n "dev" -c "$HOME/dev"
+          tmux new-window -d -t "${tmux_session}:5" -n "infra" -c "$HOME/dev/infrastructure"
+          tmux new-window -d -t "${tmux_session}:6" -n "temp" -c "$HOME/temp"
+          tmux new-window -d -t "${tmux_session}:7" -n "Downloads" -c "$HOME/Downloads"
+          tmux new-window -d -t "${tmux_session}:8" -n ".dotfiles" -c "$HOME/.dotfiles"
+          tmux new-window -d -t "${tmux_session}:9" -n "last" -c "$HOME"
+        fi
+        # Attach after create/init.
+        tmux attach-session -t "$tmux_session"
       fi
     fi
   fi
