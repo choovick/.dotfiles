@@ -1,5 +1,7 @@
 # Themes
 theme = dark:Gruvbox Dark,light: Gruvbox Light
+# keep xterm-like 256 palette behavior; see https://github.com/ghostty-org/ghostty/discussions/10852
+palette-generate = false
 # brew install --cask font-jetbrains-mono-nerd-font
 font-family = JetBrainsMono Nerd Font Propo
 minimum-contrast = 1.1
