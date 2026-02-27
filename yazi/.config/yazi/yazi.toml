@@ -2,3 +2,7 @@
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
+[preview]
+# Change them to your desired values
+max_width  = 2000
+max_height = 2000

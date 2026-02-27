@@ -3,5 +3,10 @@ use = "KKV9/compress"
 rev = "cb6e8ec"
 hash = "424ada4807b20ccd4fc85d1d7c26d1e4"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:toggle-pane"
+rev = "1962818"
+hash = "4c0260feb50ea2437380690ffc241da7"
+
 [flavor]
 deps = []
