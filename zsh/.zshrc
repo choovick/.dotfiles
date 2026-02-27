@@ -123,9 +123,11 @@ alias k9='k9s --context $(kubectl config get-contexts -o name | fzf)'
 ## Terraform
 TF_BIN="tofu"
 alias tf="${TF_BIN}"
-alias tfa="terraprism --tofu apply"
-alias tfp="terraprism --tofu plan"
-alias tfi="${TF_BIN} init"
+# Initialize with OpenTofu
+export TERRAPRISM_TOFU=1
+alias tfa="terraprism apply"
+alias tfp="terraprism plan"
+alias tfi="terraprism init"
 function tff() {
   tf fmt -recursive "$(git rev-parse --show-toplevel)/terraform"
 }
@@ -212,3 +214,6 @@ export PATH="/Users/sjc-lp03734/.antigravity/antigravity/bin:$PATH"
 
 # krew path
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# https://docs.granted.dev/recipes/automatically_reassume/
+export GRANTED_ENABLE_AUTO_REASSUME=true
