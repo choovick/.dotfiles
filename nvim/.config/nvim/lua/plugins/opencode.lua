@@ -40,26 +40,65 @@ local function copy_code_reference(include_content)
 end
 
 return {
-  "NickvanDyke/opencode.nvim",
-  dependencies = { "folke/snacks.nvim" },
+  "nickjvandyke/opencode.nvim",
+  version = "*",
+  dependencies = {
+    {
+      -- `snacks.nvim` integration is recommended, but optional
+      ---@module "snacks" <- Loads `snacks.nvim` types for configuration intellisense
+      "folke/snacks.nvim",
+      optional = true,
+      opts = {
+        input = {}, -- Enhances `ask()`
+        picker = { -- Enhances `select()`
+          actions = {
+            opencode_send = function(...)
+              return require("opencode").snacks_picker_send(...)
+            end,
+          },
+          win = {
+            input = {
+              keys = {
+                ["<a-a>"] = { "opencode_send", mode = { "n", "i" } },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   config = function()
+    ---@type opencode.Opts
     vim.g.opencode_opts = {
       -- https://github.com/NickvanDyke/opencode.nvim/blob/main/lua/opencode/config.lua
+      server = {
+        port = 4096,
+        start = function() end,
+        stop = function() end,
+        toggle = function() end,
+      },
     }
+
+    vim.o.autoread = true
+
+    -- stylua: ignore start
+    vim.keymap.set({ "n", "x" }, "<leader>oa", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode" })
+    vim.keymap.set({ "n", "x" }, "<leader>op", function() require("opencode").select() end,                          { desc = "Select action" })
+    vim.keymap.set("n",          "<leader>on", function() require("opencode").command("session.new") end,             { desc = "New session" })
+    vim.keymap.set("n",          "<leader>os", function() require("opencode").command("session.select") end,          { desc = "Select session" })
+    vim.keymap.set("n",          "<leader>oS", function() require("opencode").command("session.share") end,           { desc = "Share session" })
+    vim.keymap.set("n",          "<leader>oc", function() require("opencode").command("session.compact") end,         { desc = "Compact session" })
+    vim.keymap.set("n",          "<leader>oi", function() require("opencode").command("session.interrupt") end,       { desc = "Interrupt session" })
+    vim.keymap.set({ "n", "t" }, "<leader>oo", function() require("opencode").toggle() end,                           { desc = "Toggle opencode" })
+
+    vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { desc = "Add range to opencode", expr = true })
+    vim.keymap.set("n",          "goo", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
+
+    vim.keymap.set("x", "<leader>oy", function() copy_code_reference(false) end, { desc = "Copy code reference" })
+    vim.keymap.set("x", "<leader>oY", function() copy_code_reference(true) end,  { desc = "Copy code reference with content" })
+
+    vim.keymap.set({ "n", "i", "t" }, "<M-u>", function() require("opencode").command("session.half.page.up") end,   { desc = "Scroll messages up" })
+    vim.keymap.set({ "n", "i", "t" }, "<M-d>", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll messages down" })
+    -- stylua: ignore end
   end,
-  -- stylua: ignore
-  keys = {
-    { '<leader>oo', function() require('opencode').toggle() end, desc = 'Toggle embedded opencode', },
-    { '<leader>oa', function() require('opencode').ask('@this: ', { submit = true }) end, desc = 'Ask opencode', mode = 'n', },
-    { '<leader>oa', function() require('opencode').ask('@this: ', { submit = true }) end, desc = 'Ask opencode about selection', mode = 'v', },
-    { '<leader>op', function() require('opencode').select() end, desc = 'Select prompt', mode = { 'n', 'v', }, },
-    { '<leader>on', function() require('opencode').command('session.new') end, desc = 'New session', },
-    { '<leader>os', function() require('opencode').select_server() end, desc = 'Select server', },
-    { '<leader>oS', function() require('opencode').select_session() end, desc = 'Select session', },
-    { '<leader>oy', function() require('opencode').command('messages_copy') end, desc = 'Copy last message', },
-    { '<leader>oy', function() copy_code_reference(false) end, desc = 'Copy code reference', mode = 'v', },
-    { '<leader>oY', function() copy_code_reference(true) end, desc = 'Copy code reference with content', mode = 'v', },
-    { '<M-u>', function() require('opencode').command('session.half.page.up') end, desc = 'Scroll messages up', mode = { 'n', 'i', 't' }, },
-    { '<M-d>', function() require('opencode').command('session.half.page.down') end, desc = 'Scroll messages down', mode = { 'n', 'i', 't' }, },
-  },
 }
