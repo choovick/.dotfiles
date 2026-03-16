@@ -139,6 +139,8 @@ if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PRO
           tmux new-window -d -t "${tmux_session}:7" -n "Downloads" -c "$HOME/Downloads"
           tmux new-window -d -t "${tmux_session}:8" -n ".dotfiles" -c "$HOME/.dotfiles"
           tmux new-window -d -t "${tmux_session}:9" -n "last" -c "$HOME"
+        else
+           tmux new-window -d -t "${tmux_session}:2" -n "notes" -c "$HOME/dev/notes"
         fi
         # Attach after create/init.
         tmux attach-session -t "$tmux_session"
