@@ -101,52 +101,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
--- BACKGROUND COLOR FOR INACTIVE WINDOWS
--- Global Function to apply background color based on window state
-function set_background_based_dark_mode(win_id, is_active)
-  if is_active then
-    -- Default background color
-    vim.cmd("highlight NormalBackground guibg=NONE")
-    vim.api.nvim_win_set_option(win_id, "winhl", "Normal:NormalBackground")
-  else
-    if vim.o.background == "dark" then
-      vim.cmd("highlight InactiveBackground guibg=#424242")
-    else
-      vim.cmd("highlight InactiveBackground guibg=#A9A9A9")
-    end
-    vim.api.nvim_win_set_option(win_id, "winhl", "Normal:InactiveBackground")
-  end
-end
-
--- Set up autocommand for entering a window
-vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
-  callback = function()
-    set_background_based_dark_mode(vim.api.nvim_get_current_win(), true)
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-      if win ~= vim.api.nvim_get_current_win() then
-        set_background_based_dark_mode(win, false)
-      end
-    end
-  end,
-})
-
--- Set up autocommand for leaving a window
-vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
-  callback = function()
-    set_background_based_dark_mode(vim.api.nvim_get_current_win(), false)
-  end,
-})
-
--- Optional: Apply the InactiveBackground on startup for inactive windows
-vim.api.nvim_create_autocmd({ "VimEnter", "FocusGained" }, {
-  callback = function()
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-      if win ~= vim.api.nvim_get_current_win() then
-        set_background_based_dark_mode(win, false)
-      end
-    end
-  end,
-})
 -- nvim-tree window picker highlight
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
