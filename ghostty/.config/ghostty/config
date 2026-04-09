@@ -1,7 +1,7 @@
 # Themes
 theme = dark:Gruvbox Dark,light: Gruvbox Light
 # keep xterm-like 256 palette behavior; see https://github.com/ghostty-org/ghostty/discussions/10852
-palette-generate = false
+# palette-generate = false
 # brew install --cask font-jetbrains-mono-nerd-font
 font-family = JetBrainsMono Nerd Font Propo
 minimum-contrast = 1.1
@@ -13,7 +13,7 @@ shell-integration = zsh
 scrollback-limit = 104857600
 
 # opacity
-background-opacity = .9
+background-opacity = .98
 background-blur-radius = 20
 
 # view
