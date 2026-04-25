@@ -87,6 +87,12 @@ export PATH=/opt/homebrew/bin:$PATH       # arm brew (takes precedence)
 export DENO_INSTALL="/Users/sjc-lp03734/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
+# cargo
+if [ -f $(which cargo) ]; then
+  # cargo is installed
+. "$HOME/.cargo/env"
+fi
+
 # thefuck
 if [ -f $(which thefuck) ]; then
   # thefuck is installed
