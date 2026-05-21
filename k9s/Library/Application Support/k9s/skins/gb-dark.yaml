@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 
 # Styles...
-foreground: &foreground "#ebdbb2"
+foreground: &foreground "default"
 background: &background "default"
 current_line: &current_line "#ebdbb2"
 selection: &selection "#3c3735"
