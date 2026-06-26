@@ -223,3 +223,7 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # https://docs.granted.dev/recipes/automatically_reassume/
 export GRANTED_ENABLE_AUTO_REASSUME=true
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/sjc-lp03734/.local/bin:$PATH"
