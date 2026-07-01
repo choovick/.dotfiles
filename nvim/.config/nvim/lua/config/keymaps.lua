@@ -48,6 +48,9 @@ keymap.set("n", "<leader>sX", "<cmd>bp <bar> bd #<CR>", { desc = "Close buffer" 
 
 keymap.set("n", "<leader>ss", "<C-x>", { desc = "Swap current window with next" }) -- swap window with next
 
+-- reload current buffer from disk, discarding unsaved changes
+keymap.set("n", "<leader>l", "<cmd>e!<CR>", { desc = "Reload buffer (:e!)" })
+
 keymap.set("n", "<leader>tN", "<cmd>tabnew<CR>", { desc = "Open new tab" }) -- open new tab
 keymap.set("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" }) -- close current tab
 keymap.set("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" }) --  go to next tab
