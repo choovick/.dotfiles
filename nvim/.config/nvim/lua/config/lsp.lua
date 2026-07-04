@@ -1,6 +1,35 @@
 -- Native Neovim LSP configuration for 0.11+
 -- Based on https://gpanders.com/blog/whats-new-in-neovim-0-11/
 
+-- Neovim has no lsp.log max-size option (warns only at 1 GB). Trim on startup.
+local max_lsp_log_bytes = 50 * 1024 * 1024 -- 50 MB
+
+local function trim_lsp_log_if_oversized()
+  local path = vim.lsp.log.get_filename()
+  local info = vim.uv.fs_stat(path)
+  if not info or info.size <= max_lsp_log_bytes then
+    return
+  end
+  local file = io.open(path, "w")
+  if file then
+    file:write(
+      string.format(
+        "[TRUNCATED][%s] previous log was %d MB (limit %d MB)\n",
+        os.date("%F %H:%M:%S"),
+        math.floor(info.size / (1024 * 1024)),
+        math.floor(max_lsp_log_bytes / (1024 * 1024))
+      )
+    )
+    file:close()
+  end
+end
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = trim_lsp_log_if_oversized,
+  desc = "Truncate oversized lsp.log",
+})
+
 -- Enable the LSP servers
 local servers = {
   "lua_ls",
