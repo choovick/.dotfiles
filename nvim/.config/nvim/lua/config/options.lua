@@ -30,6 +30,20 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
+-- Detect Helm chart template files (yaml/tpl/txt under a chart's templates/
+-- or crds/ dir) so helm_ls and the helm Treesitter parser actually attach.
+-- Plain filetype.add extension matching can't see the "templates/" ancestor
+-- dir, so this uses Lua path patterns against the full file path instead.
+vim.filetype.add({
+  pattern = {
+    [".*/templates/.*%.ya?ml"] = "helm",
+    [".*/templates/.*%.tpl"] = "helm",
+    [".*/templates/.*%.txt"] = "helm",
+    [".*/crds/.*%.ya?ml"] = "helm",
+    ["helmfile.*%.ya?ml"] = "helm",
+  },
+})
+
 -- see non printable characters
 opt.list = true
 
