@@ -29,7 +29,7 @@ return {
       ensure_installed = {
         "lua_ls",
         "pyright",
-        "terraformls", 
+        "terraformls",
         "graphql",
         "bashls",
         "yamlls",
@@ -40,6 +40,7 @@ return {
 
     mason_tool_installer.setup({
       ensure_installed = {
+        "tree-sitter-cli", -- compile treesitter parsers (:TSInstall)
         "prettier", -- prettier formatter
         "stylua", -- lua formatter
         "isort", -- python formatter
