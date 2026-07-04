@@ -5,6 +5,7 @@ local parsers = {
   "terraform",
   "graphql",
   "helm",
+  "gotmpl",
   "python",
   "javascript",
   "html",
