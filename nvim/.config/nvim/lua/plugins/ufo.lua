@@ -48,6 +48,10 @@ return {
 
       require("ufo").setup({
         provider_selector = function(bufnr, filetype, buftype)
+          -- terraform-ls fold requests are expensive; indent folds are enough
+          if filetype == "terraform" or filetype == "terraform-vars" then
+            return { "indent" }
+          end
           return { "lsp", "indent" }
         end,
         fold_virt_text_handler = handler,
