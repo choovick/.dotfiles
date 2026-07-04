@@ -169,7 +169,7 @@ keymap.set({ "n", "v" }, "<leader>fY", function()
   end
   local rel_dir = vim.fn.expand("%:h")
   vim.fn.setreg("+", rel_dir) -- yank to system clipboard
-  print("Yanked file directory: " .. rel_dir)
+  print("Copied file directory to clipboard: " .. rel_dir)
 end, { desc = "Yank current file directory relative to cwd" })
 
 -- EXPLORER
