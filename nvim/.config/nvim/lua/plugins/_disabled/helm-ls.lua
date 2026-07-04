@@ -1,5 +1,6 @@
 return {
   "qvalentin/helm-ls.nvim",
+  enabled = false, -- superseded by native helm_ls LSP config in lsp/helm_ls.lua
   ft = "helm",
   opts = {
     conceal_templates = {
