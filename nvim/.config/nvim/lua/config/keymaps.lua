@@ -157,7 +157,7 @@ keymap.set({ "n", "v" }, "<leader>fy", function()
     return
   end
   vim.fn.setreg("+", rel_path) -- yank to system clipboard
-  print("Yanked file path: " .. rel_path)
+  print("Copied file path to clipboard: " .. rel_path)
 end, { desc = "Yank current file path relative to cwd" })
 
 -- leader fY to yank current file directory relative to cwd in n or v mode
