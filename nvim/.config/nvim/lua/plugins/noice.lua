@@ -35,14 +35,6 @@ return {
   },
   dependencies = {
     "MunifTanjim/nui.nvim",
-    {
-      "rcarriga/nvim-notify",
-      config = function()
-        -- gruvbox transparent_mode leaves NotifyBackground without bg
-        require("notify").setup({
-          background_colour = "#000000",
-        })
-      end,
-    },
+    "rcarriga/nvim-notify",
   },
 }
