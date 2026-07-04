@@ -332,6 +332,8 @@ keymap.set("n", "<leader>aw", "<cmd>set wrap!<CR>", { desc = "Toggle word wrap" 
 keymap.set({ "n", "v" }, ";", "<cmd>FzfLua command_history<cr>", { desc = "Command history" })
 -- leader : to open FzfLua commands
 keymap.set({ "n", "v" }, "<leader>:", "<cmd>FzfLua commands<cr>", { desc = "FzfLua commands" })
+-- leader ? to search all keymaps
+keymap.set({ "n", "v" }, "<leader>?", "<cmd>FzfLua keymaps<cr>", { desc = "Search keymaps" })
 
 -- Create a new tmux pane with the current file's directory or current working directory
 vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
