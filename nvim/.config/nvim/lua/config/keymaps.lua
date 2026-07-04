@@ -1,5 +1,4 @@
--- set leader key to space
-vim.g.mapleader = " "
+-- mapleader/maplocalleader are set in config/lazy.lua, before Lazy loads plugins
 
 -- set keymaps
 local keymap = vim.keymap -- for conciseness
