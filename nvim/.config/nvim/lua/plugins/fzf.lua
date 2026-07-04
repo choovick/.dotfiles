@@ -111,6 +111,31 @@ return {
       end,
       desc = "Search in current buffer",
     },
+    -- COMMANDS / KEYMAPS (must live here so lazy.nvim loads fzf-lua first)
+    {
+      ";",
+      function()
+        require("fzf-lua").command_history()
+      end,
+      desc = "Command history",
+      mode = { "n", "v" },
+    },
+    {
+      "<leader>:",
+      function()
+        require("fzf-lua").commands()
+      end,
+      desc = "FzfLua commands",
+      mode = { "n", "v" },
+    },
+    {
+      "<leader>?",
+      function()
+        require("fzf-lua").keymaps()
+      end,
+      desc = "Search keymaps",
+      mode = { "n", "v" },
+    },
   },
   config = function()
     -- https://github.com/ibhagwan/fzf-lua?tab=readme-ov-file#default-options
