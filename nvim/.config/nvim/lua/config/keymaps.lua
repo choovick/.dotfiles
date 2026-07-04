@@ -277,14 +277,6 @@ keymap.set(
   { noremap = true, silent = true, desc = "Decode certificate" }
 )
 
--- telescope diff
-vim.keymap.set("n", "<leader>aD", function()
-  require("telescope").extensions.diff.diff_files({ hidden = true })
-end, { desc = "Compare 2 files" })
-vim.keymap.set("n", "<leader>ad", function()
-  require("telescope").extensions.diff.diff_current({ hidden = true })
-end, { desc = "Compare file with current" })
-
 -- action to select all text leader aa
 keymap.set({ "v", "n" }, "<leader>aa", "ggVG", { noremap = true, silent = true, desc = "Select all text" })
 
