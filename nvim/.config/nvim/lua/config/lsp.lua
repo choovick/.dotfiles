@@ -126,7 +126,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.diagnostic.jump({ count = 1, float = true })
     end, vim.tbl_extend("force", opts, { desc = "Go to next diagnostic" }))
 
-    -- LSP restart
+    -- LSP restart (copilot excluded; use nvim.lsp.enable group, not doautocmd FileType)
     vim.keymap.set("n", "<leader>r", function()
       -- Gitsigns detach/attach workaround
       vim.cmd("silent! Gitsigns detach")
@@ -134,11 +134,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
       local buf = vim.api.nvim_get_current_buf()
       local clients = vim.lsp.get_clients({ bufnr = buf })
-
-      if #clients == 0 then
-        vim.notify("No LSP clients attached", vim.log.levels.WARN)
-        return
-      end
 
       local client_names = {}
       for _, lsp_client in ipairs(clients) do
@@ -148,26 +143,33 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
       end
 
-      vim.notify("Stopping LSP clients: " .. table.concat(client_names, ", "))
+      if #client_names == 0 then
+        vim.notify("No LSP clients to restart (copilot excluded)", vim.log.levels.WARN)
+        return
+      end
+
+      vim.notify("Restarting LSP clients: " .. table.concat(client_names, ", "))
 
       vim.defer_fn(function()
-        local filetype = vim.bo[buf].filetype
-        if filetype and filetype ~= "" then
-          vim.cmd("doautocmd FileType " .. filetype)
+        -- Re-attach vim.lsp.enable servers for this buffer only; avoids copilot SIGTERM
+        vim.api.nvim_exec_autocmds("FileType", {
+          buffer = buf,
+          group = "nvim.lsp.enable",
+        })
 
-          vim.defer_fn(function()
-            local new_clients = vim.lsp.get_clients({ bufnr = buf })
-            if #new_clients > 0 then
-              local new_names = {}
-              for _, client in ipairs(new_clients) do
-                table.insert(new_names, client.name)
-              end
-              vim.notify("LSP clients restarted: " .. table.concat(new_names, ", "))
-            else
-              vim.notify("No LSP clients restarted", vim.log.levels.WARN)
+        vim.defer_fn(function()
+          local new_names = {}
+          for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+            if client.name ~= "copilot" then
+              table.insert(new_names, client.name)
             end
-          end, 1000)
-        end
+          end
+          if #new_names > 0 then
+            vim.notify("LSP clients restarted: " .. table.concat(new_names, ", "))
+          else
+            vim.notify("No LSP clients restarted", vim.log.levels.WARN)
+          end
+        end, 1000)
       end, 500)
     end, vim.tbl_extend("force", opts, { desc = "Restart LSP" }))
   end,
