@@ -25,6 +25,7 @@ return {
       { "<leader>e", group = "explorer", icon = { icon = "󰙅", color = "cyan" } },
       { "<leader>f", group = "find", icon = { icon = "", color = "green" } },
       { "<leader>h", group = "harpoon", icon = { icon = "󰛢", color = "yellow" } },
+      { "<leader>o", group = "AI", icon = { icon = "󰚩", color = "orange" } },
       { "<leader>q", group = "quickfix", icon = { icon = "󰙵", color = "azure" } },
       { "<leader>s", group = "split", icon = { icon = "", color = "purple" } },
       { "<leader>t", group = "tabs", icon = { icon = "", color = "green" } },

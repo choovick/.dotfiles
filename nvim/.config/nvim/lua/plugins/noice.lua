@@ -1,6 +1,13 @@
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
+  keys = {
+    {
+      "<leader>m",
+      "<cmd>Noice fzf<cr>",
+      desc = "Message history",
+    },
+  },
   opts = {
     lsp = {
       -- Treesitter markdown for LSP hover/docs (blink.cmp owns its own docs UI)
