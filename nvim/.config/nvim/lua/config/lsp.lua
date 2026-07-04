@@ -126,7 +126,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.diagnostic.jump({ count = 1, float = true })
     end, vim.tbl_extend("force", opts, { desc = "Go to next diagnostic" }))
 
-    -- LSP rstart keybinding
+    -- LSP restart
     vim.keymap.set("n", "<leader>r", function()
       -- Gitsigns detach/attach workaround
       vim.cmd("silent! Gitsigns detach")
