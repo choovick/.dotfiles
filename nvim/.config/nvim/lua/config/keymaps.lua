@@ -1,4 +1,8 @@
--- mapleader/maplocalleader are set in config/lazy.lua, before Lazy loads plugins
+-- set leader key to space
+-- NOTE: this must be set here too (not just in config/lazy.lua) because
+-- init.lua loads config.keymaps before config.lazy, and <leader> in
+-- keymap.set() expands to the *current* mapleader value at call time.
+vim.g.mapleader = " "
 
 -- set keymaps
 local keymap = vim.keymap -- for conciseness
@@ -36,8 +40,10 @@ keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- incremen
 keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- WINDOW MANAGEMENT
-keymap.set("n", "<leader>sv", "<C-w>s", { desc = "Split window vertically" }) -- split window vertically
-keymap.set("n", "<leader>sh", "<C-w>v", { desc = "Split window horizontally" }) -- split window horizontally
+-- naming mirrors tmux's -v/-h split flags (see TmuxNewPaneDir below): "v" means
+-- panes stacked vertically (top/bottom), "h" means panes side by side (horizontally)
+keymap.set("n", "<leader>sv", "<C-w>s", { desc = "Split window vertically" }) -- panes stacked top/bottom
+keymap.set("n", "<leader>sh", "<C-w>v", { desc = "Split window horizontally" }) -- panes side by side
 keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- make split windows equal width & height
 keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
