@@ -10,10 +10,12 @@ local parsers = {
   "javascript",
   "html",
   "json",
+  "toml",
 }
 
 -- Filetypes that use a treesitter parser but are not named after it.
-local highlight_filetypes = vim.list_extend({ "terraform-vars" }, parsers)
+-- ghostty: parser built by bezhermoso/tree-sitter-ghostty (see plugins/ghostty.lua)
+local highlight_filetypes = vim.list_extend({ "terraform-vars", "ghostty" }, parsers)
 
 local function install_parsers()
   require("nvim-treesitter").install(parsers)
@@ -23,7 +25,10 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
-    dependencies = { "williamboman/mason.nvim" },
+    dependencies = {
+      "williamboman/mason.nvim",
+      "bezhermoso/tree-sitter-ghostty",
+    },
     lazy = false,
     build = ":TSUpdate",
     config = function()

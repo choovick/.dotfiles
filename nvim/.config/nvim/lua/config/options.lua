@@ -14,6 +14,14 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.filetype.add({
+  pattern = {
+    [".*/ghostty/config$"] = "ghostty",
+    [".*/ghostty/themes/.*"] = "ghostty",
+    ["%.ghostty$"] = "ghostty",
+  },
+})
+
 -- Add filetypes for terraform
 vim.filetype.add({
   extension = {
