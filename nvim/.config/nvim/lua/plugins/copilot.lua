@@ -1,13 +1,10 @@
 return {
   "zbirenbaum/copilot.lua",
-  -- enabled = false,
   cmd = "Copilot",
-  event = "InsertEnter",
+  event = "VeryLazy",
   -- Run `:Copilot auth` once after install (see plugin README); avoid `build` so updates do not re-trigger auth.
-  -- Full default `setup()` options: https://github.com/zbirenbaum/copilot.lua#setup-and-configuration
   opts = {
     panel = { enabled = false },
-    -- Inline ghost text; hide when blink.cmp menu is open (User autocommands from plugin README).
     suggestion = {
       enabled = true,
       auto_trigger = true,
@@ -23,15 +20,11 @@ return {
         dismiss = "<M-h>",
       },
     },
-    -- filetypes
-    -- https://github.com/zbirenbaum/copilot.lua?tab=readme-ov-file#filetypes
     filetypes = {
-      markdown = true, -- overrides default
-      -- terraform = false, -- disallow specific filetype
+      markdown = true,
       yaml = true,
       sh = function()
         if string.match(vim.fs.basename(vim.api.nvim_buf_get_name(0)), "^%.env.*") then
-          -- disable for .env files
           return false
         end
         return true
@@ -42,13 +35,17 @@ return {
     require("copilot").setup(opts)
 
     local group = vim.api.nvim_create_augroup("CopilotBlinkCmp", { clear = true })
+
+    -- blink.cmp recipe: hide ghost text while the completion menu is open
     vim.api.nvim_create_autocmd("User", {
       group = group,
       pattern = "BlinkCmpMenuOpen",
       callback = function()
+        require("copilot.suggestion").dismiss()
         vim.b.copilot_suggestion_hidden = true
       end,
     })
+
     vim.api.nvim_create_autocmd("User", {
       group = group,
       pattern = "BlinkCmpMenuClose",
@@ -56,9 +53,50 @@ return {
         vim.b.copilot_suggestion_hidden = false
       end,
     })
+
+    -- blink.cmp re-applies its insert keymaps on every InsertEnter (see blink keymap/init.lua).
+    -- Re-register copilot accept keys after blink finishes (schedule = runs after this event batch).
+    vim.api.nvim_create_autocmd("InsertEnter", {
+      group = group,
+      callback = function(args)
+        local bufnr = args.buf
+        vim.schedule(function()
+          if not vim.api.nvim_buf_is_valid(bufnr) then
+            return
+          end
+          local client = require("copilot.client")
+          if client.buf_is_attached(bufnr) then
+            require("copilot.suggestion").set_keymap(bufnr)
+          end
+        end)
+      end,
+    })
+
+    -- Safety net when the menu closes without BlinkCmpMenuClose (e.g. some cancel paths)
+    vim.api.nvim_create_autocmd("InsertLeave", {
+      group = group,
+      callback = function()
+        if pcall(require, "blink.cmp") and not require("blink.cmp").is_menu_visible() then
+          vim.b.copilot_suggestion_hidden = false
+        end
+      end,
+    })
   end,
   keys = {
-    -- leader o r to disable/enable copilot in the single hotkey
-    { "<leader>or", "<cmd>Copilot disable<CR><cmd>Copilot enable<CR>", desc = "Copilot Disable/Enable" },
+    {
+      "<leader>or",
+      function()
+        vim.b.copilot_suggestion_hidden = false
+        local client = require("copilot.client")
+        local bufnr = vim.api.nvim_get_current_buf()
+        if client.buf_is_attached(bufnr) then
+          require("copilot.suggestion").set_keymap(bufnr)
+          require("copilot.suggestion").update_preview()
+        else
+          vim.cmd("Copilot enable")
+        end
+      end,
+      desc = "Refresh Copilot suggestions",
+    },
   },
 }
