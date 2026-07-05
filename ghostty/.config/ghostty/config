@@ -33,3 +33,12 @@ keybind = ctrl+tab=text:\x1b\x09
 keybind = super+s=text:\x13
 
 confirm-close-surface = false
+
+# cursor shaders — https://github.com/sahaj-b/ghostty-cursor-shaders
+# trails: cursor_warp, cursor_sweep, cursor_tail
+# pulse: ripple_cursor, sonic_boom_cursor, ripple_rectangle_cursor, rectangle_boom_cursor
+custom-shader-animation = always
+custom-shader = shaders/cursor_warp.glsl
+custom-shader = shaders/sonic_boom_cursor.glsl
+
+
