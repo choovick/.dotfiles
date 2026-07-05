@@ -8,6 +8,7 @@ return {
       surround_chars = { "{", "}", "[", "]", "(", ")", "'", '"', "`", "*", "`" },
       -- whether to exit visual mode after adding surround
       exit_visual_mode = false,
+      enable_wrapped_deletion = true,
     })
   end,
 }
