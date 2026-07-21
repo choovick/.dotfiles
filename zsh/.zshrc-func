@@ -75,16 +75,68 @@ bindkey -s '^g' 'fcd $HOME no-ignore\n'
 ##  Bind Ctrl+f to the fcd function with a folder of "dev"
 bindkey -s '^f' 'fcd $HOME/dev\n'
 
-# helper function to select running aws instance and connect via ssm
+# helper function to select aws profile / region / ec2 instance and connect via ssm
 ssm() {
-  local INSTANCE
-  INSTANCE=$(aws ec2 describe-instances \
-    --filters "Name=instance-state-name,Values=running" \
-    --query "Reservations[].Instances[].{ID:InstanceId,Name:Tags[?Key=='Name']|[0].Value,State:State.Name}" \
-    --output text |
-    fzf --header="Select a running instance to connect via SSM" |
-    awk '{print $1}')
-  [ -n "$INSTANCE" ] && aws ssm start-session --target "$INSTANCE"
+  local profile="" region="" target=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -p|--profile)     profile="$2"; shift 2 ;;
+      -r|--region)      region="$2"; shift 2 ;;
+      -i|--instance-id) target="$2"; shift 2 ;;
+      *) echo "Usage: ssm [-p profile] [-r region] [-i instance-id]" >&2; return 1 ;;
+    esac
+  done
+
+  # Profile: use given, else fall back to current AWS_PROFILE, else fzf-pick
+  if [[ -z "$profile" && -n "$AWS_PROFILE" ]]; then
+    profile="$AWS_PROFILE"
+    echo "Using cached profile '$profile' (unset AWS_PROFILE, or pass -p, to change)" >&2
+  fi
+  if [[ -z "$profile" ]]; then
+    profile=$(aws configure list-profiles | fzf --prompt="AWS Profile> ")
+    [[ -z "$profile" ]] && { echo "No profile selected" >&2; return 1; }
+  fi
+  export AWS_PROFILE="$profile"
+
+  # Region: use given, else fall back to current default, else fzf-pick
+  if [[ -z "$region" && -n "${AWS_REGION:-$AWS_DEFAULT_REGION}" ]]; then
+    region="${AWS_REGION:-$AWS_DEFAULT_REGION}"
+    echo "Using cached region '$region' (unset AWS_REGION AWS_DEFAULT_REGION, or pass -r, to change)" >&2
+  fi
+  if [[ -z "$region" ]]; then
+    region=$(aws ec2 describe-regions --query 'Regions[].RegionName' --output text |
+      tr '\t' '\n' | sort | fzf --prompt="AWS Region ($profile)> ")
+    [[ -z "$region" ]] && { echo "No region selected" >&2; return 1; }
+  fi
+  export AWS_REGION="$region"
+  export AWS_DEFAULT_REGION="$region"
+
+  # Instance: use given id, else describe + fzf-filter by name
+  if [[ -z "$target" ]]; then
+    local selection tmpfile pid spin='/-\|' i=0
+    tmpfile=$(mktemp)
+    aws ec2 describe-instances \
+      --filters "Name=instance-state-name,Values=running,stopped,pending,stopping" \
+      --query 'Reservations[].Instances[].[Tags[?Key==`Name`]|[0].Value, InstanceId, State.Name, InstanceType, PrivateIpAddress]' \
+      --output text >"$tmpfile" 2>&1 &
+    pid=$!
+    while kill -0 "$pid" 2>/dev/null; do
+      printf "\r%s Fetching instances in %s..." "${spin:$((i % ${#spin})):1}" "$region" >&2
+      i=$((i + 1))
+      sleep 0.1
+    done
+    wait "$pid"
+    printf "\r\033[K" >&2
+    selection=$(sort -u "$tmpfile" | fzf --prompt="EC2 Instance ($region)> " \
+      --header="NAME  INSTANCE-ID  STATE  TYPE  PRIVATE-IP")
+    rm -f "$tmpfile"
+    [[ -z "$selection" ]] && { echo "No instance selected" >&2; return 1; }
+    target=$(awk '{print $2}' <<<"$selection")
+  fi
+
+  echo "Connecting to $target via SSM (profile=$profile region=$region)..."
+  aws ssm start-session --target "$target"
 }
 
 # clear tmux history and screen
