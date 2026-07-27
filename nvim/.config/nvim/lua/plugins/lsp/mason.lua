@@ -34,6 +34,7 @@ return {
         "bashls",
         "yamlls",
         "helm_ls",
+        "gopls",
       },
       automatic_installation = true,
     })
@@ -46,6 +47,9 @@ return {
         "isort", -- python formatter
         "black", -- python formatter
         "shellcheck", -- shell script linter
+        "goimports", -- go import formatter
+        "gofumpt", -- go formatter
+        "staticcheck", -- go linter
       },
     })
   end,

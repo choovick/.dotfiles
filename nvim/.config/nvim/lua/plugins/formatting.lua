@@ -20,6 +20,7 @@ return {
         liquid = { "prettier" },
         lua = { "stylua" },
         python = { "isort", "black" },
+        go = { "goimports", "gofumpt" },
         terraform = { "terraform_fmt" },
         groovy = { "npm-groovy-lint" },
         sh = { "shfmt" },

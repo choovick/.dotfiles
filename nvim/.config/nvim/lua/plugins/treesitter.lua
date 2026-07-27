@@ -6,6 +6,8 @@ local parsers = {
   "graphql",
   "helm",
   "gotmpl",
+  "go",
+  "gomod",
   "python",
   "javascript",
   "html",

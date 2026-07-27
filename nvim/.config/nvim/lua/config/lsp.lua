@@ -40,6 +40,7 @@ local servers = {
   "yamlls",
   "helm_ls",
   "kcl",
+  "gopls",
 }
 
 for _, server in ipairs(servers) do
