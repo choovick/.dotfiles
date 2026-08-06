@@ -200,3 +200,10 @@ if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PRO
     fi
   fi
 fi
+
+# helper function to update kubeconfig for all EKS clusters in the current AWS profile
+eks-ctx-all() {
+  for c in $(aws eks list-clusters --query 'clusters[]' --output text); do
+    aws eks update-kubeconfig --name "$c" --alias "$c"
+  done
+}
