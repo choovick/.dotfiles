@@ -40,7 +40,7 @@ keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- incremen
 keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- WINDOW MANAGEMENT
--- naming mirrors tmux's -v/-h split flags (see TmuxNewPaneDir below): "v" means
+-- naming mirrors tmux's -v/-h split flags (see MuxNewPaneDir below): "v" means
 -- panes stacked vertically (top/bottom), "h" means panes side by side (horizontally)
 keymap.set("n", "<leader>sv", "<C-w>s", { desc = "Split window vertically" }) -- panes stacked top/bottom
 keymap.set("n", "<leader>sh", "<C-w>v", { desc = "Split window horizontally" }) -- panes side by side
@@ -328,8 +328,10 @@ keymap.set("n", "<leader>ad", ":DiffLastTwo<CR>", { desc = "Compare Last Two Buf
 -- add action to toggle word wrap
 keymap.set("n", "<leader>aw", "<cmd>set wrap!<CR>", { desc = "Toggle word wrap" })
 
--- Create a new tmux pane with the current file's directory or current working directory
-vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
+-- Create a new mux pane (tmux or Herdr) with cwd or buffer directory.
+-- Args: vc|hc|vb|hb — v/h = stacked/side-by-side, c/b = cwd/buffer dir.
+-- Dispatches via config.mux (DOTFILES_MUX override → HERDR_ENV → TMUX).
+vim.api.nvim_create_user_command("MuxNewPaneDir", function(arg)
   local argStr = arg.args
   if not (argStr == "vc" or argStr == "hc" or argStr == "vb" or argStr == "hb") then
     print(
@@ -337,8 +339,8 @@ vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
     )
     return
   end
+
   local dir
-  local splitType = argStr:sub(1, 1) == "v" and "-v" or "-h" -- determine split type based on first letter
   if argStr:sub(2, 2) == "c" then
     dir = vim.fn.getcwd()
   else
@@ -348,27 +350,50 @@ vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
     print("Directory is empty")
     return
   end
-  -- Construct the tmux command
-  local tmuxCommand = string.format("tmux split-window %s -c %s", splitType, dir)
-  -- Execute the tmux command
-  os.execute(tmuxCommand)
-  print("Created new tmux pane in directory " .. dir)
-end, { nargs = 1, desc = "Create a new tmux pane with the current file's directory or current working directory" })
 
--- sV to create a new tmux pane vertically with the current buffer directory or current working directory
-keymap.set({ "n", "v" }, "<leader>sV", ":TmuxNewPaneDir vb<CR>", {
-  noremap = true,
-  silent = true,
-  desc = "Create a new tmux pane vertically with the current buffer directory or current working directory",
+  local mux = require("config.mux").detect()
+  local is_vertical = argStr:sub(1, 1) == "v"
+  local quoted_dir = vim.fn.shellescape(dir)
+
+  if mux == "herdr" then
+    -- herdr: down = stacked (tmux -v), right = side-by-side (tmux -h)
+    local direction = is_vertical and "down" or "right"
+    local cmd = string.format("herdr pane split --current --direction %s --cwd %s", direction, quoted_dir)
+    os.execute(cmd)
+    print("Created new herdr pane in directory " .. dir)
+  elseif mux == "tmux" then
+    local splitType = is_vertical and "-v" or "-h"
+    local cmd = string.format("tmux split-window %s -c %s", splitType, quoted_dir)
+    os.execute(cmd)
+    print("Created new tmux pane in directory " .. dir)
+  else
+    print("Not inside tmux or Herdr (set DOTFILES_MUX or open a mux session)")
+  end
+end, {
+  nargs = 1,
+  desc = "Create a new tmux/Herdr pane with the current file's directory or current working directory",
 })
 
--- sH to create a new tmux pane horizontally with the current buffer directory or current working directory
-keymap.set({ "n", "v" }, "<leader>sH", ":TmuxNewPaneDir hb<CR>", {
-  noremap = true,
-  silent = true,
-  desc = "Create a new tmux pane horizontally with the current buffer directory or current working directory",
+-- Keep legacy command name as an alias
+vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
+  vim.cmd("MuxNewPaneDir " .. arg.args)
+end, {
+  nargs = 1,
+  desc = "Alias for MuxNewPaneDir (tmux/Herdr)",
 })
 
+-- sV / sH: mux pane from buffer directory (tmux or Herdr via mux detector)
+keymap.set({ "n", "v" }, "<leader>sV", ":MuxNewPaneDir vb<CR>", {
+  noremap = true,
+  silent = true,
+  desc = "Create a new mux pane vertically with the current buffer directory",
+})
+
+keymap.set({ "n", "v" }, "<leader>sH", ":MuxNewPaneDir hb<CR>", {
+  noremap = true,
+  silent = true,
+  desc = "Create a new mux pane horizontally with the current buffer directory",
+})
 -- alt-i,o to BufferNext and alt-i to BufferPrevious in all modes
 keymap.set({ "n", "v", "i", "x" }, "<A-o>", "<cmd>BufferNext<CR>", { desc = "Next buffer" })
 keymap.set({ "n", "v", "i", "x" }, "<A-i>", "<cmd>BufferPrevious<CR>", { desc = "Previous buffer" })
