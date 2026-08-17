@@ -131,6 +131,8 @@ TF_BIN="tofu"
 alias tf="${TF_BIN}"
 # Initialize with OpenTofu
 export TERRAPRISM_TOFU=1
+# override terraprism binary
+alias terraprism="/Users/sjc-lp03734/dev/terraprism/bin/terraprism"
 alias tfa="terraprism apply"
 alias tfp="terraprism plan"
 alias tfi="terraprism init"

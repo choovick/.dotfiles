@@ -157,11 +157,11 @@ function y() {
 
 # TMUX auto-start for interactive terminal apps.
 # Scope this logic to terminal emulators we use for tmux sessions.
+# Skip when already in tmux or Herdr (Herdr is launched manually).
 if [[ "$TERM_PROGRAM" = "iTerm.app" || "$TERM_PROGRAM" = "WezTerm" || "$TERM_PROGRAM" = "ghostty" ]]; then
-  # Skip when we are already inside tmux.
-  if [ "$TMUX" = "" ]; then
+  if [[ -z "$TMUX" && "$HERDR_ENV" != "1" ]]; then
     # Avoid nested tmux from Neovim terminal buffers.
-    if [ -n "$NVIM_LISTEN_ADDRESS" ]; then
+    if [[ -n "$NVIM_LISTEN_ADDRESS" || -n "$NVIM" ]]; then
       echo "We are in nvim terminal"
     else
       # Session routing:
