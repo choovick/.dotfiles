@@ -3,8 +3,10 @@
 ## Requirements
 
 1. GNU Stow
+2. Node.js 18+ (for MCP server management)
+3. jq (for Claude Code MCP deploys)
 
-OSX install: `brew install stow`
+OSX install: `brew install stow jq`
 
 ## Usage
 
@@ -34,3 +36,15 @@ OSX install: `brew install stow`
     stow tmux
     # etc.
     ```
+
+## MCP servers
+
+MCP servers are managed by `mcpsmgr` via the `mcpsmgr/` stow package. See
+`mcpsmgr/README.md` and `mcpsmgr/Makefile` for details.
+
+```bash
+cd $HOME/.dotfiles/mcpsmgr
+make help        # list available targets
+make install     # install servers from manifest into central repo
+make deploy      # deploy all servers to all agents (Cursor, Codex, Claude Code)
+```
