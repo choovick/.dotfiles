@@ -1,0 +1,14 @@
+git:
+  log:
+    # Always draw the commit graph
+    showGraph: always
+
+    # Show commits from ALL branches by default
+    # Equivalent to: git log --all
+    showWholeGraph: true
+
+keybinding:
+  commits:
+    # Default is <ctrl+l>
+    # Remapped because Ctrl+L conflicts with your terminal multiplexer
+    openLogMenu: <ctrl+g>
