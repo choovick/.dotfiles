@@ -3,6 +3,15 @@
 
 MCP_SERVERS := terraform context7 atlassian
 
+# Resolve this Makefile's real directory (follows stow symlinks), so the
+# default manifest is found no matter where make is invoked from.
+REPO_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+
+# Manifest resolution order:
+# 1. ./mcp-manifest.json in the current directory (project-level override)
+# 2. mcp-manifest.json next to this Makefile (dotfiles default, stow-safe)
+MANIFEST := $(firstword $(wildcard ./mcp-manifest.json $(REPO_DIR)mcp-manifest.json))
+
 # Ensure brew and local bins are on PATH (make uses /bin/sh by default)
 export PATH := /opt/homebrew/bin:/usr/local/bin:$(HOME)/.local/bin:$(HOME)/bin:$(PATH)
 
@@ -12,7 +21,9 @@ export PATH := /opt/homebrew/bin:/usr/local/bin:$(HOME)/.local/bin:$(HOME)/bin:$
 # === Install / Update central repo ===
 
 install:
-	npx mcpsmgr install ~/mcp-manifest.json
+	@test -n "$(MANIFEST)" || { echo "No mcp-manifest.json found (looked in ./ and $(REPO_DIR))"; exit 1; }
+	@echo "Using manifest: $(MANIFEST)"
+	npx mcpsmgr install $(MANIFEST)
 
 update:
 	npx mcpsmgr update
