@@ -12,6 +12,7 @@ in each agent's native config format — with automatic schema translation.
 | File | Stows to | Purpose |
 |------|----------|---------|
 | `mcp-manifest.json` | `~/mcp-manifest.json` | Canonical server definitions (no secrets — uses `${VAR}` references) |
+| `Makefile` | `~/Makefile` | Convenience targets wrapping `mcpsmgr` — also usable standalone (see below) |
 
 ## What is NOT stowed (stays local)
 
@@ -33,6 +34,7 @@ npm install -g mcpsmgr
 Other tools needed by the servers in this manifest:
 - **Docker** — for the terraform MCP server (`docker ps` should work)
 - **Node.js 18+** — for npx-based servers (context7, atlassian)
+- **jq** — for the Makefile's `deploy-claude` target (`brew install jq`)
 
 ## Setup
 
@@ -71,6 +73,36 @@ npx mcpsmgr list
 ```
 
 Should show all servers registered in the central repo.
+
+## Use the Makefile standalone (no stow, no clone)
+
+Don't want to clone this repo or install GNU Stow? Download just the two files
+into any directory:
+
+```bash
+mkdir -p ~/.mcpsmgr && cd ~/.mcpsmgr
+curl -O https://raw.githubusercontent.com/choovick/.dotfiles/main/mcpsmgr/Makefile
+curl -O https://raw.githubusercontent.com/choovick/.dotfiles/main/mcpsmgr/mcp-manifest.json
+```
+
+Then use the `make` targets instead of raw `mcpsmgr` commands:
+
+```bash
+make install   # register servers from mcp-manifest.json into ~/.mcps-manager/
+make deploy    # deploy to Cursor, Codex, and Claude Code (user-level)
+make list      # verify what got registered
+```
+
+How it finds the manifest: the Makefile looks for `./mcp-manifest.json` in the
+current directory first, then falls back to the manifest sitting next to the
+Makefile itself (it resolves symlinks, so this also works when stowed). As long
+as both downloaded files sit in the same directory, just run `make` from there.
+
+Notes:
+- `make deploy-claude` requires `jq` (`brew install jq`).
+- The server list is hardcoded in the Makefile's `MCP_SERVERS` variable — if you
+  edit `mcp-manifest.json`, update that variable to match.
+- Run `make help` to see all available targets.
 
 ## Deploy to a project
 
