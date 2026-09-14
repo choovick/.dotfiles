@@ -32,8 +32,7 @@ npm install -g mcpsmgr
 
 Other tools needed by the servers in this manifest:
 - **Docker** — for the terraform MCP server (`docker ps` should work)
-- **Node.js 18+** — for npx-based servers (jira)
-- **Jira API token** — create at https://id.atlassian.com/manage-profile/security/api-tokens
+- **Node.js 18+** — for npx-based servers (context7, atlassian)
 
 ## Setup
 
@@ -55,15 +54,13 @@ npx mcpsmgr install ~/mcp-manifest.json
 ```
 
 This reads the manifest and registers all servers in `~/.mcps-manager/servers/`.
-You'll be prompted for any required variables (Jira email, API token, domain).
+If a server declares required variables, you'll be prompted for them.
 
 **Non-interactive alternative** (for CI or scripting):
 
 ```bash
 npx mcpsmgr install ~/mcp-manifest.json \
-  --var JIRA_EMAIL=you@company.com \
-  --var JIRA_API_TOKEN=ATATT3xF... \
-  --var JIRA_DOMAIN=company.atlassian.net \
+  --var SOME_VAR=value \
   -y
 ```
 
@@ -171,8 +168,8 @@ Then delete the entry from `mcp-manifest.json` and commit.
 | Name | Transport | Command | Notes |
 |------|-----------|---------|-------|
 | terraform | stdio | `docker run -i --rm hashicorp/terraform-mcp-server:latest` | HashiCorp official Terraform MCP |
-| context7 | http | `https://mcp.context7.com/mcp` | Library documentation lookup |
-| jira | stdio | `npx -y jira-server` | [cfdude/mcp-jira](https://github.com/cfdude/mcp-jira) — needs Jira Cloud creds |
+| context7 | stdio | `npx -y mcp-remote https://mcp.context7.com/mcp` | Library documentation lookup |
+| atlassian | stdio | `npx -y mcp-remote https://mcp.atlassian.com/v1/mcp/authv2` | Atlassian official remote MCP — OAuth login flow in browser, no API token needed |
 
 ## Security notes
 
@@ -197,7 +194,7 @@ Then delete the entry from `mcp-manifest.json` and commit.
 | Problem | Fix |
 |---------|-----|
 | `deploy` didn't write to an agent | The project has no config file for that agent yet. Create it first (e.g. `touch .mcp.json`) or run `mcpsmgr deploy` and select the agent interactively. |
-| Jira server fails to start | Check `JIRA_DOMAIN` is correct (e.g. `company.atlassian.net` without `https://`). Verify the API token is valid at https://id.atlassian.com/manage-profile/security/api-tokens. |
+| atlassian server fails to start | The OAuth login flow opens in your browser on first use — make sure you complete it. If the token expired, clear the `mcp-remote` auth cache (`rm -rf ~/.mcp-auth`) and retry. |
 | terraform server fails to start | Ensure Docker is running (`docker ps`). The image will be pulled on first use. |
 | context7 doesn't respond | Test the URL: `curl -I https://mcp.context7.com/mcp`. A 404/405 means the server is up (MCP endpoints only answer POST). |
 | `mcpsmgr: command not found` | Run `npm install -g mcpsmgr` or use `npx mcpsmgr` instead. |
