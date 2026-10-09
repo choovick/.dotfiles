@@ -142,7 +142,8 @@ ssm() {
 # clear tmux history and screen
 c() {
   clear
-  tmux clear-history
+  # if inside tmux, clear history as well
+  [[ -n "$TMUX" ]] && tmux clear-history
 }
 
 # Yazi
