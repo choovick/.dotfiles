@@ -119,3 +119,9 @@
 [startup]
 tiled = true
 daemon = true
+
+# Match tmux/herdr tab navigation (Ghostty sends Ctrl+Tab as CSI-u):
+#   Ctrl+Tab / Ctrl+Shift+Tab → next / previous workspace
+[keybindings.global]
+next_workspace = ["ctrl+tab"]
+prev_workspace = ["ctrl+shift+tab"]
