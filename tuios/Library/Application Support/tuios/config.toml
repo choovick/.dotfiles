@@ -125,3 +125,10 @@ daemon = true
 [keybindings.global]
 next_workspace = ["ctrl+tab"]
 prev_workspace = ["ctrl+shift+tab"]
+
+# Match tmux/herdr splits: prefix+h side by side, prefix+v stacked.
+# review moved off v (G is free; r is rename_window) to make room.
+[keybindings.prefix_mode]
+prefix_split_vertical = ["h", "|", "\\"]
+prefix_split_horizontal = ["v", "-"]
+prefix_review = ["G"]
