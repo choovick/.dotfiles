@@ -1,4 +1,5 @@
 # Yazi pluings
 yazi/.config/yazi/plugins/*
+yazi/.config/yazi/package.toml
 # vscode
 .vscode
