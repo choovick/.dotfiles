@@ -48,6 +48,88 @@ function split-folders() {
   fi
 }
 
+# helper function to split folders in herdr panes
+function split-folders-herdr() {
+  # Must run inside a herdr pane (--current relies on HERDR_PANE_ID).
+  if [[ -z "$HERDR_PANE_ID" ]]; then
+    echo "Not inside a herdr session. Exiting."
+    return 1
+  fi
+  if ! command -v jq >/dev/null; then
+    echo "jq is required to parse herdr output. Exiting."
+    return 1
+  fi
+
+  # Use fzf to select multiple folders
+  local folders
+  # all subfolders, obey git!
+  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d) 2>/dev/null)" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+
+  echo "Selected folders: $folders"
+
+  if [[ -z "$folders" ]]; then
+    echo "No folders selected. Exiting."
+    return 1
+  fi
+
+  # Collect selected folders into an array (zsh arrays are 1-based).
+  local -a folder_arr
+  local folder
+  while IFS= read -r folder; do
+    folder_arr+=("$folder")
+  done <<<"$folders"
+  local count=${#folder_arr[@]}
+
+  # Compute a near-square grid: cols = ceil(sqrt(count)).
+  # First (count % cols) columns get one extra row so every cell is used.
+  local cols=$(awk -v n="$count" 'BEGIN { print int(sqrt(n) + 0.9999) }')
+  local base_rows=$((count / cols))
+  local extra=$((count % cols))
+
+  # Rows per column and 1-based start index of each column's folders.
+  local -a rows_per_col start_idx col_panes
+  local s=1 c r
+  for ((c = 1; c <= cols; c++)); do
+    rows_per_col+=($((base_rows + (c <= extra ? 1 : 0))))
+    start_idx+=($s)
+    s=$((s + rows_per_col[c]))
+  done
+
+  # The current pane becomes the top-left cell of the grid.
+  col_panes+=("$HERDR_PANE_ID")
+
+  # Create the remaining column panes with equal widths by splitting the
+  # current pane to the right: split c of cols-1 uses ratio 1/(cols-c+2).
+  local ratio result new_pane
+  for ((c = 2; c <= cols; c++)); do
+    ratio=$((1.0 / (cols - c + 2)))
+    result=$(herdr pane split "$HERDR_PANE_ID" --direction right --ratio "$ratio" \
+      --cwd "$PWD/${folder_arr[${start_idx[$c]}]}" --no-focus)
+    new_pane=$(echo "$result" | jq -r '.result.pane.pane_id // empty')
+    if [[ -z "$new_pane" ]]; then
+      echo "Failed to create pane for column $c. Aborting."
+      return 1
+    fi
+    col_panes+=("$new_pane")
+  done
+
+  # Split each column into its rows with equal heights: split r of
+  # rows-1 uses ratio 1/(rows-r+2).
+  for ((c = 1; c <= cols; c++)); do
+    for ((r = 2; r <= rows_per_col[c]; r++)); do
+      ratio=$((1.0 / (rows_per_col[c] - r + 2)))
+      if ! herdr pane split "${col_panes[$c]}" --direction down --ratio "$ratio" \
+        --cwd "$PWD/${folder_arr[$((start_idx[c] + r - 1))]}" --no-focus >/dev/null; then
+        echo "Failed to create row $r in column $c. Aborting."
+        return 1
+      fi
+    done
+  done
+
+  # Current pane is the top-left cell: move it to the first folder.
+  cd "$PWD/${folder_arr[1]}"
+}
+
 # this will search dev folders with some ingnores
 fcd() {
   local folder="$1" # Get the folder name from the first argument
