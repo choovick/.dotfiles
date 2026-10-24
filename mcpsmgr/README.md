@@ -33,8 +33,17 @@ npm install -g mcpsmgr
 
 Other tools needed by the servers in this manifest:
 - **Docker** — for the terraform MCP server (`docker ps` should work)
-- **Node.js 18+** — for npx-based servers (context7, atlassian)
+- **Node.js 18+** — for npx-based servers (context7)
+- **uv/uvx** — for the atlassian MCP server (`brew install uv`)
 - **jq** — for the Makefile's `deploy-claude` target (`brew install jq`)
+
+The atlassian server also needs credentials at install time
+(`mcpsmgr install` will prompt for them):
+- `JIRA_URL` / `CONFLUENCE_URL` — e.g. `https://your-company.atlassian.net` and
+  `https://your-company.atlassian.net/wiki`
+- `JIRA_USERNAME` / `CONFLUENCE_USERNAME` — your Atlassian account email
+- `JIRA_API_TOKEN` / `CONFLUENCE_API_TOKEN` — create at
+  https://id.atlassian.com/manage-profile/security/api-tokens
 
 ## Setup
 
@@ -65,6 +74,28 @@ npx mcpsmgr install ~/mcp-manifest.json \
   --var SOME_VAR=value \
   -y
 ```
+
+`${VAR}` references resolve in priority order: `--var` flag → process
+environment → interactive prompt. So instead of `--var` flags you can export
+the variables first — with `-y` the install then runs with no prompts at all.
+Example for the atlassian server:
+
+```bash
+export JIRA_URL="https://your-company.atlassian.net"
+export JIRA_USERNAME="you@company.com"
+export JIRA_API_TOKEN="your_token"
+export CONFLUENCE_URL="https://your-company.atlassian.net/wiki"
+export CONFLUENCE_USERNAME="you@company.com"
+export CONFLUENCE_API_TOKEN="your_token"
+
+npx mcpsmgr install ~/mcp-manifest.json -y
+make deploy
+```
+
+`-y` implies `--force` (overwrites existing central entries without
+confirmation) and fails fast if any required variable is missing. Prefer
+exporting over `--var` for secrets so tokens stay out of your shell history
+(source them from a file or password manager).
 
 ### 3. Verify
 
@@ -201,7 +232,7 @@ Then delete the entry from `mcp-manifest.json` and commit.
 |------|-----------|---------|-------|
 | terraform | stdio | `docker run -i --rm hashicorp/terraform-mcp-server:latest` | HashiCorp official Terraform MCP |
 | context7 | stdio | `npx -y mcp-remote https://mcp.context7.com/mcp` | Library documentation lookup |
-| atlassian | stdio | `npx -y mcp-remote https://mcp.atlassian.com/v1/mcp/authv2` | Atlassian official remote MCP — OAuth login flow in browser, no API token needed |
+| atlassian | stdio | `uvx mcp-atlassian` | [sooperset/mcp-atlassian](https://github.com/sooperset/mcp-atlassian) — local server for Jira & Confluence, API token auth via env vars |
 
 ## Security notes
 
@@ -226,7 +257,7 @@ Then delete the entry from `mcp-manifest.json` and commit.
 | Problem | Fix |
 |---------|-----|
 | `deploy` didn't write to an agent | The project has no config file for that agent yet. Create it first (e.g. `touch .mcp.json`) or run `mcpsmgr deploy` and select the agent interactively. |
-| atlassian server fails to start | The OAuth login flow opens in your browser on first use — make sure you complete it. If the token expired, clear the `mcp-remote` auth cache (`rm -rf ~/.mcp-auth`) and retry. |
+| atlassian server fails to start | Ensure `uvx` is installed (`brew install uv`) and credentials are set in `~/.mcps-manager/servers/atlassian.json`. To rotate the API token, re-run `npx mcpsmgr install ~/mcp-manifest.json --force` and re-deploy. |
 | terraform server fails to start | Ensure Docker is running (`docker ps`). The image will be pulled on first use. |
 | context7 doesn't respond | Test the URL: `curl -I https://mcp.context7.com/mcp`. A 404/405 means the server is up (MCP endpoints only answer POST). |
 | `mcpsmgr: command not found` | Run `npm install -g mcpsmgr` or use `npx mcpsmgr` instead. |
