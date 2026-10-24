@@ -110,6 +110,8 @@ export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 ## NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh" # This loads nvm
+# Keep nvm node ahead of homebrew node (brew shellenv in .zprofile can push it back)
+[ -n "$NVM_BIN" ] && PATH="$NVM_BIN:${PATH//$NVM_BIN:/}"
 ## Krew
 export PATH="${PATH}:${HOME}/.krew/bin"
 ## Postgresql path
