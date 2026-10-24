@@ -126,9 +126,22 @@ daemon = true
 next_workspace = ["ctrl+tab"]
 prev_workspace = ["ctrl+shift+tab"]
 
+# Resize (herdr alt+hjkl): j/k = height, h/l = master width
+resize_height_grow = ["alt+j"]
+resize_height_shrink = ["alt+k"]
+resize_master_shrink = ["alt+h"]
+resize_master_grow = ["alt+l"]
+
 # Match tmux/herdr splits: prefix+h side by side, prefix+v stacked.
 # review moved off v (G is free; r is rename_window) to make room.
 [keybindings.prefix_mode]
 prefix_split_vertical = ["h", "|", "\\"]
 prefix_split_horizontal = ["v", "-"]
 prefix_review = ["G"]
+
+# Navigate panes like herdr/tmux: Ctrl+hjkl (Alt+arrows kept as default).
+[keybindings.terminal_mode]
+terminal_focus_left = ["ctrl+h", "alt+left"]
+terminal_focus_down = ["ctrl+j", "alt+down"]
+terminal_focus_up = ["ctrl+k", "alt+up"]
+terminal_focus_right = ["ctrl+l", "alt+right"]
