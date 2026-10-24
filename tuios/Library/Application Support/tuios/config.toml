@@ -145,3 +145,11 @@ terminal_focus_left = ["ctrl+h", "alt+left"]
 terminal_focus_down = ["ctrl+j", "alt+down"]
 terminal_focus_up = ["ctrl+k", "alt+up"]
 terminal_focus_right = ["ctrl+l", "alt+right"]
+
+# Keep up to 1M lines of each pane's history across daemon restarts.
+[daemon]
+persist_scrollback_lines = 1000000
+
+# Lines each pane keeps in scrollback (read at daemon start; applies to new panes).
+[appearance]
+scrollback_lines = 1000000
