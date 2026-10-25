@@ -68,8 +68,10 @@ make start                  # start the real daemon through the app
 make autostart              # start the app at login
 ```
 
-Start the app before your first `tuios` after login. If no daemon is running, `tuios` starts its own, and
-that one is owned by the terminal again.
+`make autostart` installs a LaunchAgent that runs at login and starts the app only when no daemon is
+running, so it is safe to run while your daemon is up. Open your terminal after login finishes: if `tuios`
+runs before the app and no daemon is running, `tuios` starts its own, and that one is owned by the terminal
+again.
 
 `make status` shows the app, autostart and the running daemon. `make uninstall` removes the app and the
 login item. `make clean` deletes `build/`.
