@@ -1,9 +1,10 @@
 return {
   "aserowy/tmux.nvim",
-  -- Load outside Herdr so C-hjkl still work in plain nvim / tmux.
-  -- Inside Herdr, herdr-splits.nvim owns those keys instead.
+  -- Load outside Herdr/TUIOS so C-hjkl still work in plain nvim / tmux.
+  -- Inside Herdr, herdr-splits.nvim owns those keys; inside TUIOS, tuios-nvim-navigator does.
   cond = function()
-    return not require("config.mux").is_herdr()
+    local mux = require("config.mux")
+    return not mux.is_herdr() and not mux.is_tuios()
   end,
   config = function()
     -- https://github.com/aserowy/tmux.nvim?tab=readme-ov-file#configuration

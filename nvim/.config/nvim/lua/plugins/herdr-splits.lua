@@ -1,8 +1,40 @@
+local mux = require("config.mux")
+
+-- Herdr owns nav + resize. TUIOS only borrows resize (nav is tuios-nvim-navigator), because TUIOS
+-- runs herdr plugin actions through its herdr emulation but has no resize hand-off of its own.
+-- Under TUIOS the plugin's Alt+hjkl keys live in the TUIOS config (shell command keys), and the plugin
+-- must be enabled once from a terminal OUTSIDE TUIOS: `tuios plugins enable herdr-splits`.
+local function key(lhs, fn, desc)
+  return {
+    lhs,
+    function()
+      require("herdr-splits")[fn]()
+    end,
+    desc = desc,
+  }
+end
+
+local function build_keys()
+  local keys = {
+    key("<M-h>", "resize_left", "Resize left (nvim/herdr)"),
+    key("<M-j>", "resize_down", "Resize down (nvim/herdr)"),
+    key("<M-k>", "resize_up", "Resize up (nvim/herdr)"),
+    key("<M-l>", "resize_right", "Resize right (nvim/herdr)"),
+  }
+  if mux.is_herdr() then
+    table.insert(keys, 1, key("<C-h>", "move_cursor_left", "Navigate left (nvim/herdr)"))
+    table.insert(keys, 2, key("<C-j>", "move_cursor_down", "Navigate down (nvim/herdr)"))
+    table.insert(keys, 3, key("<C-k>", "move_cursor_up", "Navigate up (nvim/herdr)"))
+    table.insert(keys, 4, key("<C-l>", "move_cursor_right", "Navigate right (nvim/herdr)"))
+  end
+  return keys
+end
+
 return {
   "lmilojevicc/herdr-splits.nvim",
-  -- Only load inside Herdr (or when DOTFILES_MUX/vim.g.dotfiles_mux forces herdr)
+  -- Load inside Herdr and TUIOS (or when DOTFILES_MUX/vim.g.dotfiles_mux forces one of them)
   cond = function()
-    return require("config.mux").is_herdr()
+    return mux.is_herdr() or mux.is_tuios()
   end,
   event = "VeryLazy",
   -- Keep Herdr-side scripts in sync with the Neovim plugin commit after Lazy updates.
@@ -15,67 +47,11 @@ return {
       at_edge = "wrap",
       nav_at_edge = "wrap",
       unzoom_on_nav = true,
-      auto_sync_herdr = true,
+      -- TUIOS has no herdr plugin install/sync; its plugin is linked from herdr's folder.
+      auto_sync_herdr = not mux.is_tuios(),
       nav_keys = { left = "<C-h>", down = "<C-j>", up = "<C-k>", right = "<C-l>" },
       resize_keys = { left = "<M-h>", down = "<M-j>", up = "<M-k>", right = "<M-l>" },
     })
   end,
-  keys = {
-    {
-      "<C-h>",
-      function()
-        require("herdr-splits").move_cursor_left()
-      end,
-      desc = "Navigate left (nvim/herdr)",
-    },
-    {
-      "<C-j>",
-      function()
-        require("herdr-splits").move_cursor_down()
-      end,
-      desc = "Navigate down (nvim/herdr)",
-    },
-    {
-      "<C-k>",
-      function()
-        require("herdr-splits").move_cursor_up()
-      end,
-      desc = "Navigate up (nvim/herdr)",
-    },
-    {
-      "<C-l>",
-      function()
-        require("herdr-splits").move_cursor_right()
-      end,
-      desc = "Navigate right (nvim/herdr)",
-    },
-    {
-      "<M-h>",
-      function()
-        require("herdr-splits").resize_left()
-      end,
-      desc = "Resize left (nvim/herdr)",
-    },
-    {
-      "<M-j>",
-      function()
-        require("herdr-splits").resize_down()
-      end,
-      desc = "Resize down (nvim/herdr)",
-    },
-    {
-      "<M-k>",
-      function()
-        require("herdr-splits").resize_up()
-      end,
-      desc = "Resize up (nvim/herdr)",
-    },
-    {
-      "<M-l>",
-      function()
-        require("herdr-splits").resize_right()
-      end,
-      desc = "Resize right (nvim/herdr)",
-    },
-  },
+  keys = build_keys(),
 }

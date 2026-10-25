@@ -328,9 +328,9 @@ keymap.set("n", "<leader>ad", ":DiffLastTwo<CR>", { desc = "Compare Last Two Buf
 -- add action to toggle word wrap
 keymap.set("n", "<leader>aw", "<cmd>set wrap!<CR>", { desc = "Toggle word wrap" })
 
--- Create a new mux pane (tmux or Herdr) with cwd or buffer directory.
+-- Create a new mux pane (tmux, Herdr or TUIOS) with cwd or buffer directory.
 -- Args: vc|hc|vb|hb — v/h = stacked/side-by-side, c/b = cwd/buffer dir.
--- Dispatches via config.mux (DOTFILES_MUX override → HERDR_ENV → TMUX).
+-- Dispatches via config.mux (DOTFILES_MUX override → TUIOS → HERDR_ENV → TMUX).
 vim.api.nvim_create_user_command("MuxNewPaneDir", function(arg)
   local argStr = arg.args
   if not (argStr == "vc" or argStr == "hc" or argStr == "vb" or argStr == "hb") then
@@ -366,12 +366,24 @@ vim.api.nvim_create_user_command("MuxNewPaneDir", function(arg)
     local cmd = string.format("tmux split-window %s -c %s", splitType, quoted_dir)
     os.execute(cmd)
     print("Created new tmux pane in directory " .. dir)
+  elseif mux == "tuios" then
+    -- tuios: horizontal = new pane below (tmux -v), vertical = new pane to the right (tmux -h)
+    local axis = is_vertical and "horizontal" or "vertical"
+    local out = vim.fn.system({ "tuios", "split-window", axis, "--json" })
+    local ok, pane = pcall(vim.json.decode, out)
+    if vim.v.shell_error ~= 0 or not ok or type(pane) ~= "table" or not pane.window_id then
+      print("tuios split-window failed: " .. vim.trim(out))
+      return
+    end
+    -- split-window has no --cwd flag; cd the new pane's shell into the requested directory.
+    vim.fn.system({ "tuios", "send-text", "-w", pane.window_id, "cd " .. quoted_dir .. "\n" })
+    print("Created new tuios pane in directory " .. dir)
   else
-    print("Not inside tmux or Herdr (set DOTFILES_MUX or open a mux session)")
+    print("Not inside tmux, Herdr or TUIOS (set DOTFILES_MUX or open a mux session)")
   end
 end, {
   nargs = 1,
-  desc = "Create a new tmux/Herdr pane with the current file's directory or current working directory",
+  desc = "Create a new tmux/Herdr/TUIOS pane with the current file's directory or current working directory",
 })
 
 -- Keep legacy command name as an alias
@@ -379,7 +391,7 @@ vim.api.nvim_create_user_command("TmuxNewPaneDir", function(arg)
   vim.cmd("MuxNewPaneDir " .. arg.args)
 end, {
   nargs = 1,
-  desc = "Alias for MuxNewPaneDir (tmux/Herdr)",
+  desc = "Alias for MuxNewPaneDir (tmux/Herdr/TUIOS)",
 })
 
 -- sV / sH: mux pane from buffer directory (tmux or Herdr via mux detector)
