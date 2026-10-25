@@ -126,12 +126,6 @@ daemon = true
 next_workspace = ["ctrl+tab"]
 prev_workspace = ["ctrl+shift+tab"]
 
-# Resize (herdr alt+hjkl): j/k = height, h/l = master width
-resize_height_grow = ["alt+j"]
-resize_height_shrink = ["alt+k"]
-resize_master_shrink = ["alt+h"]
-resize_master_grow = ["alt+l"]
-
 # Match tmux/herdr splits: prefix+h side by side, prefix+v stacked.
 # review moved off v (G is free; r is rename_window) to make room.
 [keybindings.prefix_mode]
@@ -155,3 +149,41 @@ resume_agents = "auto"
 # Lines each pane keeps in scrollback (read at daemon start; applies to new panes).
 [appearance]
 scrollback_lines = 1000000
+# Let the Neovim navigator plugin (tuios-nvim-navigator) hand C-hjkl focus back to TUIOS.
+nvim_navigation = true
+
+[plugins]
+enabled = ["herdr-splits"]
+
+# Resize like herdr: Alt+hjkl run the herdr-splits plugin actions (nvim-aware: forwarded to nvim when it is
+# the foreground program, otherwise resizes the TUIOS pane).
+# TUIOS 0.10.1 has no `plugin_action` key type yet (newer docs do), so use `shell` + the plugins CLI.
+#
+# One-time setup, run from a terminal OUTSIDE TUIOS (enable/disable/link are refused inside a pane):
+#   tuios plugins enable herdr-splits
+# TUIOS finds the plugin in herdr's folder (~/.config/herdr/plugins), so herdr must have it installed.
+# Check with: tuios plugins list   (herdr-splits should be "on")
+
+[[keybindings.command]]
+key = "alt+h"
+type = "shell"
+command = "/opt/homebrew/bin/tuios plugins run herdr-splits resize-left"
+description = "Resize left (nvim-aware)"
+
+[[keybindings.command]]
+key = "alt+j"
+type = "shell"
+command = "/opt/homebrew/bin/tuios plugins run herdr-splits resize-down"
+description = "Resize down (nvim-aware)"
+
+[[keybindings.command]]
+key = "alt+k"
+type = "shell"
+command = "/opt/homebrew/bin/tuios plugins run herdr-splits resize-up"
+description = "Resize up (nvim-aware)"
+
+[[keybindings.command]]
+key = "alt+l"
+type = "shell"
+command = "/opt/homebrew/bin/tuios plugins run herdr-splits resize-right"
+description = "Resize right (nvim-aware)"
