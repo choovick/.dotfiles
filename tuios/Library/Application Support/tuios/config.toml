@@ -125,6 +125,9 @@ daemon = true
 [keybindings.global]
 next_workspace = ["ctrl+tab"]
 prev_workspace = ["ctrl+shift+tab"]
+# Sync panes (tmux synchronize-panes): put every pane on the workspace in multifocus so typing goes to all
+# of them; press again to clear.
+toggle_multifocus_all = ["ctrl+alt+space"]
 
 # Match tmux/herdr splits: prefix+h side by side, prefix+v stacked.
 # review moved off v (G is free; r is rename_window) to make room.
