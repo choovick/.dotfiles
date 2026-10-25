@@ -14,7 +14,7 @@ sssh() {
 }
 
 # helper function to split folders in tmux panes
-function split-folders() {
+function split-folders-tmux() {
   local counter=0
   # Use fzf to select multiple folders
   local folders
@@ -128,6 +128,84 @@ function split-folders-herdr() {
 
   # Current pane is the top-left cell: move it to the first folder.
   cd "$PWD/${folder_arr[1]}"
+}
+
+# helper function to split folders in TUIOS panes
+function split-folders-tuios() {
+  # Must run inside a TUIOS pane (TUIOS_WINDOW_ID is the pane to split from).
+  if [[ "$TUIOS_ENV" != "1" || -z "$TUIOS_WINDOW_ID" ]]; then
+    echo "Not inside a TUIOS session. Exiting."
+    return 1
+  fi
+  if ! command -v jq >/dev/null; then
+    echo "jq is required to parse tuios output. Exiting."
+    return 1
+  fi
+
+  # Use fzf to select multiple folders
+  local folders
+  # all subfolders, obey git!
+  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d) 2>/dev/null)" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+
+  echo "Selected folders: $folders"
+
+  if [[ -z "$folders" ]]; then
+    echo "No folders selected. Exiting."
+    return 1
+  fi
+
+  # Collect selected folders into an array (zsh arrays are 1-based).
+  local -a folder_arr panes
+  local folder
+  while IFS= read -r folder; do
+    folder_arr+=("$folder")
+  done <<<"$folders"
+  local count=${#folder_arr[@]}
+
+  # The current pane becomes the first cell. TUIOS has no split ratios, so split in rounds
+  # (every existing pane once per round, alternating right/below) to keep the layout balanced.
+  panes+=("$TUIOS_WINDOW_ID")
+  local round=0 axis snapshot target new_pane
+  while ((${#panes[@]} < count)); do
+    if ((round % 2 == 0)); then axis=vertical; else axis=horizontal; fi
+    snapshot=("${panes[@]}")
+    for target in "${snapshot[@]}"; do
+      ((${#panes[@]} >= count)) && break
+      new_pane=$(tuios split-window "$axis" -w "$target" --json | jq -r '.window_id // empty')
+      if [[ -z "$new_pane" ]]; then
+        echo "Failed to split pane $target. Aborting."
+        return 1
+      fi
+      panes+=("$new_pane")
+    done
+    round=$((round + 1))
+  done
+
+  # Move each new pane to its folder, then make the splits even.
+  local i
+  for ((i = 2; i <= count; i++)); do
+    tuios send-text -w "${panes[$i]}" "cd ${(q)PWD}/${(q)folder_arr[$i]} && clear"$'\n'
+  done
+  tuios set-layout --equalize >/dev/null
+
+  # Current pane is the first cell: move it to the first folder.
+  cd "$PWD/${folder_arr[1]}"
+}
+
+# split folders in panes of whichever multiplexer we are in (same detection order as nvim's config/mux.lua)
+function split-folders() {
+  # TUIOS panes also export HERDR_ENV=1 (herdr emulation), so check TUIOS first.
+  # A real herdr started inside TUIOS has its own socket path, so it is not mistaken for TUIOS.
+  if [[ "$TUIOS_ENV" == "1" && ( -z "$HERDR_SOCKET_PATH" || "$HERDR_SOCKET_PATH" == *tuios* ) ]]; then
+    split-folders-tuios "$@"
+  elif [[ "$HERDR_ENV" == "1" ]]; then
+    split-folders-herdr "$@"
+  elif [[ -n "$TMUX" ]]; then
+    split-folders-tmux "$@"
+  else
+    echo "Not inside TUIOS, herdr or tmux. Exiting."
+    return 1
+  fi
 }
 
 # this will search dev folders with some ingnores
