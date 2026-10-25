@@ -135,6 +135,9 @@ toggle_multifocus_all = ["ctrl+alt+space"]
 prefix_split_vertical = ["h", "|", "\\"]
 prefix_split_horizontal = ["v", "-"]
 prefix_review = ["G"]
+# ctrl+b space enters copy/scrollback mode (like tmux prefix+[). Tiling toggle keeps ctrl+b t t and window-mode t.
+prefix_selection = ["[", "space"]
+prefix_toggle_tiling = []
 
 # Navigate panes like herdr/tmux: Ctrl+hjkl (Alt+arrows kept as default).
 [keybindings.terminal_mode]
@@ -190,3 +193,21 @@ key = "alt+l"
 type = "shell"
 command = "/opt/homebrew/bin/tuios plugins run herdr-splits resize-right"
 description = "Resize right (nvim-aware)"
+
+# ctrl+b y: open the focused pane's full scrollback in nvim in a popup (copy mode has no block select;
+# nvim has ctrl+v). It is a shell key because a popup starts focused, so it could not tell which pane to
+# capture. Read-only copy, starts at the end, temp file removed when nvim exits.
+[[keybindings.command]]
+key = "prefix+y"
+type = "shell"
+command = 'f=$(mktemp "${TMPDIR:-/tmp}/tuios-scrollback.XXXXXX") && /opt/homebrew/bin/tuios capture-pane --scrollback --lines 0 > "$f" && /opt/homebrew/bin/tuios popup --width 95% --height 90% -- sh -c "/opt/homebrew/bin/nvim -R +\"normal G\" \"$f\"; rm -f \"$f\""'
+description = "Scrollback in nvim"
+
+# ctrl+b Y: open the output of the last finished command in the focused pane in nvim in a popup
+# (same as ctrl+b y, but only that command). Needs the OSC 133 marks from zsh/.zshrc (only set inside
+# TUIOS panes), so panes opened before that change show nothing. Empty output opens nothing.
+[[keybindings.command]]
+key = "prefix+Y"
+type = "shell"
+command = 'f=$(mktemp "${TMPDIR:-/tmp}/tuios-lastcmd.XXXXXX") && /opt/homebrew/bin/tuios capture-pane --last-command > "$f" 2>/dev/null; if [ -s "$f" ]; then /opt/homebrew/bin/tuios popup --width 95% --height 90% -- sh -c "/opt/homebrew/bin/nvim -R +\"normal G\" \"$f\"; rm -f \"$f\""; else rm -f "$f"; fi'
+description = "Last command output in nvim"
