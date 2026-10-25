@@ -157,6 +157,9 @@ resume_agents = "auto"
 scrollback_lines = 1000000
 # Let the Neovim navigator plugin (tuios-nvim-navigator) hand C-hjkl focus back to TUIOS.
 nvim_navigation = true
+# Stay in terminal mode: a focus command or a single click starts typing in the pane (Tab included).
+auto_enter_terminal_on_focus = "all"
+click_to_type = "single"
 
 [plugins]
 enabled = ["herdr-splits"]
