@@ -43,6 +43,17 @@ if [ -f $(which starship) ]; then
   eval "$(starship init zsh)"
 fi
 
+## TUIOS command marks (OSC 133), so `tuios capture-pane --last-command` can find a command's output.
+## Must come after starship init because PS1+= appends to the prompt starship builds.
+if [[ "$TUIOS_ENV" == "1" ]]; then
+  autoload -Uz add-zsh-hook
+  _tuios_osc133_precmd() { local s=$?; print -n "\e]133;D;$s\a\e]133;A\a"; }
+  _tuios_osc133_preexec() { print -n "\e]133;C\a"; }
+  add-zsh-hook precmd _tuios_osc133_precmd
+  add-zsh-hook preexec _tuios_osc133_preexec
+  PS1+=$'%{\e]133;B\a%}'
+fi
+
 # FZF
 ## fzf https://github.com/junegunn/fzf#using-git
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
