@@ -80,6 +80,11 @@ login item. `make clean` deletes `build/`.
 
 - **Do not rebuild or replace the app after granting.** The grant is tied to the signature, and replacing the
   app can silently void it. `make install` refuses to replace an installed app unless you pass `FORCE=1`.
+- **Other privacy prompts need their usage text too.** Panes are attributed to the app, so the microphone
+  (voice input in coding agents) only works if `Info.plist` has `NSMicrophoneUsageDescription`, which it does.
+  For the camera or other protected resources add the matching `NS...UsageDescription` key and reinstall.
+  Without the key macOS denies access silently and shows no prompt. After adding one, reinstall with
+  `make install FORCE=1`, restart the daemon, and expect to grant Local Network again.
 - **The environment is minimal.** A daemon started from an app does not see your shell's exported variables.
   Panes run zsh, which loads your rc files, so most of them come back. Check `PATH` and anything you set in
   `.zprofile` only.

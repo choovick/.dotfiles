@@ -22,6 +22,8 @@
   <string>13.0</string>
   <key>LSUIElement</key>
   <true/>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Programs running in your TUIOS panes (for example voice input in coding agents) use the microphone.</string>
   <key>NSLocalNetworkUsageDescription</key>
   <string>The TUIOS daemon runs your terminal sessions, and the programs in them connect to hosts on your local network.</string>
 </dict>
