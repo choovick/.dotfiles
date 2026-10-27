@@ -120,6 +120,12 @@
 tiled = true
 daemon = true
 
+# Open a pane when switching to an empty workspace (incl. the new-workspace key),
+# starting it in the cwd of the pane you came from (follows ssh panes too).
+# Note: any jump to an empty workspace (e.g. opt+5 on an empty slot) now spawns a pane.
+[workspaces]
+new_window_when_empty = true
+
 # Match tmux/herdr tab navigation (Ghostty sends Ctrl+Tab as CSI-u):
 #   Ctrl+Tab / Ctrl+Shift+Tab → next / previous workspace
 [keybindings.global]
