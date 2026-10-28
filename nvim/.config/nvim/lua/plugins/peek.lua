@@ -9,6 +9,6 @@ return {
     vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
   end,
   keys = {
-    { "<leader>cg", "<cmd>PeekOpen<cr>", desc = "Peek preview" },
+    { "<leader>cG", "<cmd>PeekOpen<cr>", desc = "Peek preview" },
   },
 }
