@@ -131,6 +131,9 @@ new_window_when_empty = true
 [keybindings.global]
 next_workspace = ["ctrl+tab"]
 prev_workspace = ["ctrl+shift+tab"]
+# Move the command palette off ctrl+p (VS Code-style) so panes get ctrl+p back
+# (nvim completion, fish/readline history-back).
+command_palette = ["ctrl+shift+p"]
 # Sync panes (tmux synchronize-panes): put every pane on the workspace in multifocus so typing goes to all
 # of them; press again to clear.
 toggle_multifocus_all = ["ctrl+alt+space"]
