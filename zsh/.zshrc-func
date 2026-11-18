@@ -13,14 +13,36 @@ sssh() {
   fi
 }
 
+# helper: print absolute folder paths, one per line, for the split-folders-* functions.
+# If stdin is a pipe (e.g. `... -o paths | split-folders`) read newline-separated paths from it
+# (relative or absolute; files map to their parent dir; missing paths are skipped with a warning).
+# Otherwise pick multiple subfolders (obeying git ignores) with fzf.
+function _split_folders_pick() {
+  local line dir
+  if [[ ! -t 0 ]]; then
+    while IFS= read -r line; do
+      [[ -z "${line//[[:space:]]/}" ]] && continue
+      dir="${line:A}"
+      [[ -f "$dir" ]] && dir="${dir:h}"
+      if [[ -d "$dir" ]]; then
+        print -r -- "$dir"
+      else
+        echo "Skipping non-existent path: $line" >&2
+      fi
+    done
+  else
+    tree -dfi --noreport -I "$(git check-ignore $(find . -type d) 2>/dev/null)" | awk '{print $1}' |
+      fzf --multi --preview 'ls -la {}' | while IFS= read -r line; do print -r -- "${line:A}"; done
+  fi
+}
+
 # helper function to split folders in tmux panes
+# usage: split-folders-tmux            (fzf picker)
+#        some-command | split-folders-tmux   (folders from stdin)
 function split-folders-tmux() {
   local counter=0
-  # Use fzf to select multiple folders
-  local folders
-  #folders=$(ls -d */ | fzf --multi --preview 'ls -la {}')
-  # all subfolders, obey git!
-  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d))" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+  local folders folder
+  folders=$(_split_folders_pick)
 
   echo "Selected folders: $folders"
 
@@ -32,16 +54,17 @@ function split-folders-tmux() {
   # Iterate over selected folders (handle newline-separated values)
   while IFS= read -r folder; do
     if ((counter % 4 == 0)); then
-      tmux split-window -v "cd $folder && exec $SHELL"
+      tmux split-window -v "cd ${(q)folder} && exec $SHELL"
     else
-      tmux split-window -h "cd $folder && exec $SHELL"
+      tmux split-window -h "cd ${(q)folder} && exec $SHELL"
     fi
     tmux select-layout tiled
     counter=$((counter + 1))
   done <<<"$folders"
 
   echo "Will exit in 5 seconds, press any key to cancel"
-  if read -s -k 1 -t 5; then
+  # read from the terminal: stdin may be a pipe
+  if read -s -k 1 -t 5 </dev/tty; then
     return
   else
     exit
@@ -60,10 +83,9 @@ function split-folders-herdr() {
     return 1
   fi
 
-  # Use fzf to select multiple folders
+  # Select folders: from stdin when piped, otherwise fzf
   local folders
-  # all subfolders, obey git!
-  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d) 2>/dev/null)" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+  folders=$(_split_folders_pick)
 
   echo "Selected folders: $folders"
 
@@ -104,7 +126,7 @@ function split-folders-herdr() {
   for ((c = 2; c <= cols; c++)); do
     ratio=$((1.0 / (cols - c + 2)))
     result=$(herdr pane split "$HERDR_PANE_ID" --direction right --ratio "$ratio" \
-      --cwd "$PWD/${folder_arr[${start_idx[$c]}]}" --no-focus)
+      --cwd "${folder_arr[${start_idx[$c]}]}" --no-focus)
     new_pane=$(echo "$result" | jq -r '.result.pane.pane_id // empty')
     if [[ -z "$new_pane" ]]; then
       echo "Failed to create pane for column $c. Aborting."
@@ -119,7 +141,7 @@ function split-folders-herdr() {
     for ((r = 2; r <= rows_per_col[c]; r++)); do
       ratio=$((1.0 / (rows_per_col[c] - r + 2)))
       if ! herdr pane split "${col_panes[$c]}" --direction down --ratio "$ratio" \
-        --cwd "$PWD/${folder_arr[$((start_idx[c] + r - 1))]}" --no-focus >/dev/null; then
+        --cwd "${folder_arr[$((start_idx[c] + r - 1))]}" --no-focus >/dev/null; then
         echo "Failed to create row $r in column $c. Aborting."
         return 1
       fi
@@ -127,7 +149,7 @@ function split-folders-herdr() {
   done
 
   # Current pane is the top-left cell: move it to the first folder.
-  cd "$PWD/${folder_arr[1]}"
+  cd "${folder_arr[1]}"
 }
 
 # helper function to split folders in TUIOS panes
@@ -142,10 +164,9 @@ function split-folders-tuios() {
     return 1
   fi
 
-  # Use fzf to select multiple folders
+  # Select folders: from stdin when piped, otherwise fzf
   local folders
-  # all subfolders, obey git!
-  folders=$(tree -dfi --noreport -I "$(git check-ignore $(find . -type d) 2>/dev/null)" | awk '{print $1}' | fzf --multi --preview 'ls -la {}')
+  folders=$(_split_folders_pick)
 
   echo "Selected folders: $folders"
 
@@ -184,12 +205,12 @@ function split-folders-tuios() {
   # Move each new pane to its folder, then make the splits even.
   local i
   for ((i = 2; i <= count; i++)); do
-    tuios send-text -w "${panes[$i]}" "cd ${(q)PWD}/${(q)folder_arr[$i]} && clear"$'\n'
+    tuios send-text -w "${panes[$i]}" "cd ${(q)folder_arr[$i]} && clear"$'\n'
   done
   tuios set-layout --equalize >/dev/null
 
   # Current pane is the first cell: move it to the first folder.
-  cd "$PWD/${folder_arr[1]}"
+  cd "${folder_arr[1]}"
 }
 
 # split folders in panes of whichever multiplexer we are in (same detection order as nvim's config/mux.lua)
@@ -388,4 +409,18 @@ eks-ctx-all() {
   for c in $(aws eks list-clusters --query 'clusters[]' --output text); do
     aws eks update-kubeconfig --name "$c" --alias "$c"
   done
+}
+
+# Jump between git worktrees (fzf picker), keeping the current subdirectory when it exists in the target
+wtj() {
+  local top rel dir target
+  top=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo" >&2; return 1; }
+  # path of the current dir relative to the worktree root ("" at the root)
+  [[ "$PWD" == "$top"* ]] && rel="${PWD#$top}" || rel=""
+  dir=$(git worktree list | fzf --height 40% --reverse | awk '{print $1}')
+  [[ -z "$dir" ]] && return
+  target="$dir$rel"
+  # best effort: walk up to the nearest parent that exists in the target worktree
+  while [[ ! -d "$target" && "$target" != "$dir" ]]; do target="${target:h}"; done
+  cd "$target"
 }
